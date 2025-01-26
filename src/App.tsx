@@ -9,6 +9,7 @@ import CodeAssistant from "./pages/CodeAssistant";
 import ImageGenerator from "./pages/ImageGenerator";
 import ContentWriter from "./pages/ContentWriter";
 import DataAnalyzer from "./pages/DataAnalyzer";
+import SeoOptimizer from "./pages/SeoOptimizer";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/image-generator" element={<ImageGenerator />} />
           <Route path="/content-writer" element={<ContentWriter />} />
           <Route path="/data-analyzer" element={<DataAnalyzer />} />
+          <Route path="/seo-optimizer" element={<SeoOptimizer />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

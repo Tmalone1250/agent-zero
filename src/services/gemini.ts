@@ -111,3 +111,34 @@ export const generateDataAnalysis = async (data: string) => {
     throw error;
   }
 };
+
+export const generateSeoOptimization = async (content: string) => {
+  try {
+    console.log("Generating SEO optimization for content:", content);
+    const apiKey = await getGeminiApiKey();
+    console.log("Successfully retrieved API key");
+    
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent(`
+      As an SEO expert, please optimize the following content for search engines. 
+      Provide the optimized version along with a list of improvements made:
+
+      ${content}
+      
+      Please include:
+      1. Optimized content with proper keyword density
+      2. Meta description suggestion
+      3. Title tag suggestion
+      4. Key SEO improvements made
+      5. Additional recommendations
+    `);
+    const response = await result.response;
+    const text = response.text();
+    console.log("Received SEO optimization response:", text);
+    return text;
+  } catch (error) {
+    console.error("Error generating SEO optimization:", error);
+    throw error;
+  }
+};

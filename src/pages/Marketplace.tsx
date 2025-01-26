@@ -31,7 +31,8 @@ const agents = [
   {
     icon: <Network className="w-12 h-12 text-primary" />,
     name: "SEO Optimizer",
-    description: "Improves search rankings quickly"
+    description: "Improves search rankings quickly",
+    path: "/seo-optimizer"
   },
   {
     icon: <Bot className="w-12 h-12 text-primary" />,
