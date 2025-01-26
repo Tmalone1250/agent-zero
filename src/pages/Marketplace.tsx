@@ -1,17 +1,20 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const agents = [
   {
     icon: <Code className="w-12 h-12 text-purple-400" />,
     name: "Code Assistant",
-    description: "Expert code optimization specialist"
+    description: "Expert code optimization specialist",
+    path: "/code-assistant"
   },
   {
     icon: <Image className="w-12 h-12 text-primary" />,
     name: "Image Generator",
-    description: "Creates custom AI images"
+    description: "Creates custom AI images",
+    path: "/image-generator"
   },
   {
     icon: <MessageSquare className="w-12 h-12 text-primary" />,
@@ -56,6 +59,8 @@ const agents = [
 ];
 
 const Marketplace = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-black/[0.96] p-8">
       <div className="max-w-7xl mx-auto">
@@ -84,7 +89,10 @@ const Marketplace = () => {
                 </div>
                 <h3 className="text-xl font-semibold text-white text-center mb-2">{agent.name}</h3>
                 <p className="text-neutral-300 text-center mb-4">{agent.description}</p>
-                <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
+                <Button 
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                  onClick={() => agent.path && navigate(agent.path)}
+                >
                   Hire
                 </Button>
               </div>
