@@ -6,82 +6,52 @@ const agents = [
   {
     icon: <Code className="w-12 h-12 text-purple-400" />,
     name: "Code Assistant",
-    author: "@codemaster",
-    description: "Expert at writing, reviewing, and optimizing code across multiple languages",
-    credits: "1 credit per task",
-    tasksCompleted: "42.3K tasks completed"
+    description: "Expert code optimization specialist"
   },
   {
     icon: <Image className="w-12 h-12 text-primary" />,
     name: "Image Generator",
-    author: "@artisan",
-    description: "Creates custom images and graphics based on detailed descriptions",
-    credits: "2 credits per task",
-    tasksCompleted: "63.2K tasks completed"
+    description: "Creates custom AI images"
   },
   {
     icon: <MessageSquare className="w-12 h-12 text-primary" />,
     name: "Content Writer",
-    author: "@wordsmith",
-    description: "Crafts engaging blog posts, articles, and marketing copy",
-    credits: "1 credit per task",
-    tasksCompleted: "31.5K tasks completed"
+    description: "Writes engaging content fast"
   },
   {
     icon: <Database className="w-12 h-12 text-primary" />,
     name: "Data Analyzer",
-    author: "@datawhiz",
-    description: "Processes and analyzes large datasets to extract valuable insights",
-    credits: "2 credits per task",
-    tasksCompleted: "28.7K tasks completed"
+    description: "Processes data for insights"
   },
   {
     icon: <Network className="w-12 h-12 text-primary" />,
     name: "SEO Optimizer",
-    author: "@seomaster",
-    description: "Optimizes content and structure for better search engine rankings",
-    credits: "1 credit per task",
-    tasksCompleted: "45.1K tasks completed"
+    description: "Improves search rankings quickly"
   },
   {
     icon: <Bot className="w-12 h-12 text-primary" />,
     name: "Customer Service Bot",
-    author: "@servicebot",
-    description: "Handles customer inquiries and support tickets 24/7",
-    credits: "1 credit per task",
-    tasksCompleted: "92.4K tasks completed"
+    description: "24/7 customer support assistant"
   },
   {
     icon: <Activity className="w-12 h-12 text-primary" />,
     name: "Market Analyst",
-    author: "@marketpro",
-    description: "Analyzes market trends and provides investment insights",
-    credits: "2 credits per task",
-    tasksCompleted: "15.8K tasks completed"
+    description: "Analyzes market trends expertly"
   },
   {
     icon: <Globe className="w-12 h-12 text-primary" />,
     name: "Translation Expert",
-    author: "@linguist",
-    description: "Translates content across multiple languages while preserving context",
-    credits: "1 credit per task",
-    tasksCompleted: "73.6K tasks completed"
+    description: "Translates multiple languages instantly"
   },
   {
     icon: <Search className="w-12 h-12 text-primary" />,
     name: "Research Assistant",
-    author: "@researcher",
-    description: "Conducts thorough research and creates detailed reports",
-    credits: "2 credits per task",
-    tasksCompleted: "34.9K tasks completed"
+    description: "Fast comprehensive research helper"
   },
   {
     icon: <Target className="w-12 h-12 text-primary" />,
     name: "Lead Generator",
-    author: "@leadhunter",
-    description: "Identifies and qualifies potential business leads",
-    credits: "1 credit per task",
-    tasksCompleted: "51.2K tasks completed"
+    description: "Identifies qualified business leads"
   }
 ];
 
@@ -113,12 +83,7 @@ const Marketplace = () => {
                   {agent.icon}
                 </div>
                 <h3 className="text-xl font-semibold text-white text-center mb-2">{agent.name}</h3>
-                <p className="text-sm text-neutral-400 text-center mb-4">By {agent.author}</p>
                 <p className="text-neutral-300 text-center mb-4">{agent.description}</p>
-                <div className="text-sm text-neutral-400 text-center mb-4">
-                  <p>{agent.credits}</p>
-                  <p>{agent.tasksCompleted}</p>
-                </div>
                 <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
                   Hire
                 </Button>
