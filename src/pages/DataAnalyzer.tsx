@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { generateDataAnalysis } from "@/services/gemini";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import * as XLSX from 'xlsx';
 
 const DataAnalyzer = () => {
   const [data, setData] = useState("");
@@ -22,20 +23,38 @@ const DataAnalyzer = () => {
     setFile(selectedFile);
     
     try {
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        const content = event.target?.result as string;
-        setData(content);
-      };
+      const fileType = selectedFile.type || selectedFile.name.split('.').pop()?.toLowerCase();
+      
+      // Handle Excel files
+      if (fileType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || 
+          fileType === 'application/vnd.ms-excel' ||
+          fileType === 'application/vnd.google-apps.spreadsheet' ||
+          selectedFile.name.endsWith('.xlsx') ||
+          selectedFile.name.endsWith('.xls') ||
+          selectedFile.name.endsWith('.gsheet')) {
+        
+        const buffer = await selectedFile.arrayBuffer();
+        const workbook = XLSX.read(buffer);
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        setData(JSON.stringify(jsonData, null, 2));
+        return;
+      }
 
-      if (selectedFile.type === "text/csv" || 
-          selectedFile.type === "application/json" || 
-          selectedFile.type === "text/plain") {
+      // Handle CSV, JSON, and TXT files as before
+      if (fileType === "text/csv" || 
+          fileType === "application/json" || 
+          fileType === "text/plain") {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          const content = event.target?.result as string;
+          setData(content);
+        };
         reader.readAsText(selectedFile);
       } else {
         toast({
           title: "Unsupported file type",
-          description: "Please upload a CSV, JSON, or TXT file",
+          description: "Please upload a CSV, JSON, TXT, Excel (.xlsx, .xls), or Google Spreadsheet file",
           variant: "destructive",
         });
       }
@@ -105,12 +124,12 @@ const DataAnalyzer = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="file" className="block text-lg text-white mb-2">
-              Upload your data file (CSV, JSON, or TXT)
+              Upload your data file (CSV, JSON, TXT, Excel, or Google Spreadsheet)
             </label>
             <Input
               id="file"
               type="file"
-              accept=".csv,.json,.txt"
+              accept=".csv,.json,.txt,.xlsx,.xls,.gsheet"
               onChange={handleFileChange}
               className="bg-neutral-900 text-white border-neutral-700"
             />
