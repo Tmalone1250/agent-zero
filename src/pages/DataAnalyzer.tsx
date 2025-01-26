@@ -1,21 +1,76 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { generateDataAnalysis } from "@/services/gemini";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const DataAnalyzer = () => {
   const [data, setData] = useState("");
   const [analysis, setAnalysis] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+
+    setFile(selectedFile);
+    
+    try {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const content = event.target?.result as string;
+        setData(content);
+      };
+
+      if (selectedFile.type === "text/csv" || 
+          selectedFile.type === "application/json" || 
+          selectedFile.type === "text/plain") {
+        reader.readAsText(selectedFile);
+      } else {
+        toast({
+          title: "Unsupported file type",
+          description: "Please upload a CSV, JSON, or TXT file",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error reading file:", error);
+      toast({
+        title: "Error reading file",
+        description: "There was an error reading your file",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    
     try {
+      // Upload file to Supabase Storage if one is selected
+      let filePath = "";
+      if (file) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${crypto.randomUUID()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('data_analysis')
+          .upload(fileName, file);
+
+        if (uploadError) {
+          throw new Error(`Error uploading file: ${uploadError.message}`);
+        }
+        
+        filePath = fileName;
+      }
+
       const result = await generateDataAnalysis(data);
       setAnalysis(result);
       toast({
@@ -54,8 +109,20 @@ const DataAnalyzer = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
+            <label htmlFor="file" className="block text-lg text-white mb-2">
+              Upload your data file (CSV, JSON, or TXT)
+            </label>
+            <Input
+              id="file"
+              type="file"
+              accept=".csv,.json,.txt"
+              onChange={handleFileChange}
+              className="bg-neutral-900 text-white border-neutral-700"
+            />
+          </div>
+          <div>
             <label htmlFor="data" className="block text-lg text-white mb-2">
-              Enter your data for analysis
+              Or paste your data here
             </label>
             <Textarea
               id="data"
