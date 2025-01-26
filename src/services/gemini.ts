@@ -83,3 +83,31 @@ export const generateContent = async (prompt: string) => {
     throw error;
   }
 };
+
+export const generateDataAnalysis = async (data: string) => {
+  try {
+    console.log("Analyzing data:", data);
+    const apiKey = await getGeminiApiKey();
+    console.log("Successfully retrieved API key");
+    
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent(`
+      Please analyze this data and provide insights:
+      ${data}
+      
+      Please provide:
+      1. Summary of the data
+      2. Key patterns or trends
+      3. Notable insights
+      4. Recommendations based on the analysis
+    `);
+    const response = await result.response;
+    const text = response.text();
+    console.log("Received data analysis response:", text);
+    return text;
+  } catch (error) {
+    console.error("Error analyzing data:", error);
+    throw error;
+  }
+};

@@ -25,7 +25,8 @@ const agents = [
   {
     icon: <Database className="w-12 h-12 text-primary" />,
     name: "Data Analyzer",
-    description: "Processes data for insights"
+    description: "Processes data for insights",
+    path: "/data-analyzer"
   },
   {
     icon: <Network className="w-12 h-12 text-primary" />,
