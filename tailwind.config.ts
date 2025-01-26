@@ -87,7 +87,8 @@ export default {
 	},
 	plugins: [
 		require("tailwindcss-animate"),
-		function addVariablesForColors({ addBase, theme }: { addBase: Function; theme: Function }) {
+		require("@tailwindcss/typography"),
+		function ({ addBase, theme }: { addBase: Function; theme: (path: string) => any }) {
 			let allColors = flattenColorPalette(theme("colors"));
 			let newVars = Object.fromEntries(
 				Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
@@ -95,6 +96,6 @@ export default {
 			addBase({
 				":root": newVars,
 			});
-		}
+		},
 	],
 } satisfies Config;
