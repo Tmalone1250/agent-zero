@@ -2,15 +2,36 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { generateImage } from "@/services/gemini";
+import { useToast } from "@/components/ui/use-toast";
 
 const ImageGenerator = () => {
   const [prompt, setPrompt] = useState("");
+  const [response, setResponse] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Image Generator Prompt:", prompt);
-    // LLM integration will be added later
+    setIsLoading(true);
+    try {
+      const result = await generateImage(prompt);
+      setResponse(result);
+      toast({
+        title: "Response generated successfully",
+        description: "Check out the response below",
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Error generating image",
+        description: "Please try again later",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -47,10 +68,20 @@ const ImageGenerator = () => {
           <Button 
             type="submit"
             className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-6 text-lg"
+            disabled={isLoading}
           >
-            Generate Image
+            {isLoading ? "Generating..." : "Generate Image"}
           </Button>
         </form>
+
+        {response && (
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold text-white mb-4">Response:</h2>
+            <div className="bg-neutral-900 p-6 rounded-lg border border-neutral-700">
+              <pre className="text-white whitespace-pre-wrap">{response}</pre>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
