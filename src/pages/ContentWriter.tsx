@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { generateContentResponse } from "@/services/gemini";
+import { generateContent } from "@/services/gemini";
 import { useToast } from "@/components/ui/use-toast";
 
 const ContentWriter = () => {
@@ -16,7 +16,7 @@ const ContentWriter = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const result = await generateContentResponse(prompt);
+      const result = await generateContent(prompt);
       setResponse(result);
       toast({
         title: "Content generated successfully",
