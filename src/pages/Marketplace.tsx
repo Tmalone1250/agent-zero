@@ -126,23 +126,6 @@ const Marketplace = () => {
             </Card>
           ))}
         </div>
-
-        <Card className="w-full p-8 mt-12 bg-gradient-to-r from-purple-900/50 to-pink-900/50 border-white/10">
-          <div className="text-center">
-            <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
-              Ready to Build Your AI Team?
-            </h2>
-            <p className="text-neutral-300 mb-6 max-w-2xl mx-auto">
-              Start with a single agent or build a complete AI workforce. Scale up or down as needed,
-              with flexible hiring options designed for your success.
-            </p>
-            <Button 
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
-            >
-              Get Started Now
-            </Button>
-          </div>
-        </Card>
       </div>
     </div>
   );
