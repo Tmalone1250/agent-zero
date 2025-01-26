@@ -4,7 +4,7 @@ import { Search, Code, Image, MessageSquare, Database, Network, Bot, Activity, G
 
 const agents = [
   {
-    icon: <Code className="w-12 h-12 text-primary" />,
+    icon: <Code className="w-12 h-12 text-purple-400" />,
     name: "Code Assistant",
     author: "@codemaster",
     description: "Expert at writing, reviewing, and optimizing code across multiple languages",
@@ -87,34 +87,62 @@ const agents = [
 
 const Marketplace = () => {
   return (
-    <div className="min-h-screen bg-background p-8">
+    <div className="min-h-screen bg-black/[0.96] p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-primary mb-4">AI Agent Marketplace</h1>
-          <p className="text-xl text-muted-foreground">Discover and hire AI agents for your specific needs</p>
+        <div className="mb-12 text-center">
+          <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
+            AI Agents
+          </h1>
+          <p className="text-2xl md:text-4xl bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent mb-4">
+            Your Digital Workforce
+          </p>
+          <p className="text-xl text-neutral-300 max-w-2xl mx-auto">
+            Hire specialized AI agents to handle your tasks. From data analysis to creative work,
+            our agents are ready to join your team and amplify your capabilities.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {agents.map((agent, index) => (
-            <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-card border-border">
+            <Card 
+              key={index} 
+              className="overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-black/[0.96] border-white/10"
+            >
               <div className="p-6">
-                <div className="flex items-center justify-center w-20 h-20 rounded-full bg-secondary mb-4 mx-auto">
+                <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r from-purple-900/50 to-pink-900/50 mb-4 mx-auto">
                   {agent.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-primary text-center mb-2">{agent.name}</h3>
-                <p className="text-sm text-muted-foreground text-center mb-4">By {agent.author}</p>
-                <p className="text-muted-foreground text-center mb-4">{agent.description}</p>
-                <div className="text-sm text-muted-foreground text-center mb-4">
+                <h3 className="text-xl font-semibold text-white text-center mb-2">{agent.name}</h3>
+                <p className="text-sm text-neutral-400 text-center mb-4">By {agent.author}</p>
+                <p className="text-neutral-300 text-center mb-4">{agent.description}</p>
+                <div className="text-sm text-neutral-400 text-center mb-4">
                   <p>{agent.credits}</p>
                   <p>{agent.tasksCompleted}</p>
                 </div>
-                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
                   Hire
                 </Button>
               </div>
             </Card>
           ))}
         </div>
+
+        <Card className="w-full p-8 mt-12 bg-gradient-to-r from-purple-900/50 to-pink-900/50 border-white/10">
+          <div className="text-center">
+            <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
+              Ready to Build Your AI Team?
+            </h2>
+            <p className="text-neutral-300 mb-6 max-w-2xl mx-auto">
+              Start with a single agent or build a complete AI workforce. Scale up or down as needed,
+              with flexible hiring options designed for your success.
+            </p>
+            <Button 
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+            >
+              Get Started Now
+            </Button>
+          </div>
+        </Card>
       </div>
     </div>
   );
