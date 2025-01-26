@@ -1,43 +1,32 @@
-'use client'
-
-import { useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { generateContent } from "@/services/gemini";
-import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { generateContentResponse } from "@/services/gemini";
+import { useToast } from "@/components/ui/use-toast";
 
 const ContentWriter = () => {
   const [prompt, setPrompt] = useState("");
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!prompt.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter a prompt",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsLoading(true);
     try {
-      const content = await generateContent(prompt);
-      setResponse(content);
+      const result = await generateContentResponse(prompt);
+      setResponse(result);
       toast({
-        title: "Success",
-        description: "Content generated successfully",
+        title: "Content generated successfully",
+        description: "Check out the response below",
       });
     } catch (error) {
-      console.error("Error generating content:", error);
+      console.error("Error:", error);
       toast({
-        title: "Error",
-        description: "Failed to generate content. Please try again.",
+        title: "Error generating content",
+        description: "Please try again later",
         variant: "destructive",
       });
     } finally {
@@ -47,45 +36,51 @@ const ContentWriter = () => {
 
   return (
     <div className="min-h-screen bg-black/[0.96] p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-8">
+      <div className="max-w-3xl mx-auto">
+        <Button 
+          onClick={() => navigate("/marketplace")}
+          variant="ghost" 
+          className="mb-8 text-white hover:text-purple-400"
+        >
+          ← Back to Marketplace
+        </Button>
+
+        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
           Content Writer
         </h1>
+        <p className="text-xl text-neutral-300 mb-8">
+          Professional content generation assistant
+        </p>
 
-        <Card className="p-6 bg-black/[0.96] border-white/10 mb-6">
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <Textarea
-                placeholder="Enter your content requirements..."
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                className="min-h-[120px] bg-black/[0.96] border-white/10 text-white"
-              />
-            </div>
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                "Generate Content"
-              )}
-            </Button>
-          </form>
-        </Card>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="prompt" className="block text-lg text-white mb-2">
+              What would you like help with?
+            </label>
+            <Textarea
+              id="prompt"
+              placeholder="Describe what content you'd like to generate..."
+              className="min-h-[200px] bg-neutral-900 text-white border-neutral-700"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+            />
+          </div>
+          <Button 
+            type="submit"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-6 text-lg"
+            disabled={isLoading}
+          >
+            {isLoading ? "Generating..." : "Submit Request"}
+          </Button>
+        </form>
 
         {response && (
-          <Card className="p-6 bg-black/[0.96] border-white/10">
-            <h2 className="text-xl font-semibold text-white mb-4">Generated Content</h2>
-            <div className="prose prose-invert max-w-none">
-              <p className="text-neutral-300 whitespace-pre-wrap">{response}</p>
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold text-white mb-4">Generated Content:</h2>
+            <div className="bg-neutral-900 p-6 rounded-lg border border-neutral-700">
+              <pre className="text-white whitespace-pre-wrap">{response}</pre>
             </div>
-          </Card>
+          </div>
         )}
       </div>
     </div>
