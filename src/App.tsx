@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Marketplace from "./pages/Marketplace";
 import CodeAssistant from "./pages/CodeAssistant";
 import ImageGenerator from "./pages/ImageGenerator";
+import ContentWriter from "./pages/ContentWriter";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/code-assistant" element={<CodeAssistant />} />
           <Route path="/image-generator" element={<ImageGenerator />} />
+          <Route path="/content-writer" element={<ContentWriter />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
