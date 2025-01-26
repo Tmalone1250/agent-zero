@@ -74,14 +74,14 @@ const DataAnalyzer = () => {
       const result = await generateDataAnalysis(data);
       setAnalysis(result);
       toast({
-        title: "Analysis completed",
-        description: "Check out the analysis below",
+        title: "Analysis Complete",
+        description: "Your data has been analyzed successfully",
       });
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error analyzing data:", error);
       toast({
-        title: "Error analyzing data",
-        description: "Please try again later",
+        title: "Error",
+        description: "Failed to analyze data. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -91,22 +91,17 @@ const DataAnalyzer = () => {
 
   return (
     <div className="min-h-screen bg-black/[0.96] p-8">
-      <div className="max-w-3xl mx-auto">
-        <Button 
-          onClick={() => navigate("/marketplace")}
-          variant="ghost" 
-          className="mb-8 text-white hover:text-purple-400"
-        >
-          ← Back to Marketplace
-        </Button>
+      <Button
+        variant="ghost"
+        className="mb-8 text-white hover:text-white/80"
+        onClick={() => navigate("/marketplace")}
+      >
+        ← Back to Marketplace
+      </Button>
 
-        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
-          Data Analyzer
-        </h1>
-        <p className="text-xl text-neutral-300 mb-8">
-          Advanced data analysis powered by AI
-        </p>
-
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold text-white mb-8">Data Analyzer</h1>
+        
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="file" className="block text-lg text-white mb-2">
@@ -126,16 +121,17 @@ const DataAnalyzer = () => {
             </label>
             <Textarea
               id="data"
-              placeholder="Paste your data here (CSV, JSON, or plain text)..."
-              className="min-h-[200px] bg-neutral-900 text-white border-neutral-700"
               value={data}
               onChange={(e) => setData(e.target.value)}
+              className="h-48 bg-neutral-900 text-white border-neutral-700"
+              placeholder="Paste your data here for analysis..."
             />
           </div>
-          <Button 
+
+          <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-6 text-lg"
-            disabled={isLoading}
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+            disabled={isLoading || !data.trim()}
           >
             {isLoading ? "Analyzing..." : "Analyze Data"}
           </Button>
@@ -143,7 +139,7 @@ const DataAnalyzer = () => {
 
         {analysis && (
           <div className="mt-8">
-            <h2 className="text-2xl font-bold text-white mb-4">Analysis Results:</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">Analysis Results</h2>
             <div className="bg-neutral-900 p-6 rounded-lg border border-neutral-700">
               <pre className="text-white whitespace-pre-wrap">{analysis}</pre>
             </div>
