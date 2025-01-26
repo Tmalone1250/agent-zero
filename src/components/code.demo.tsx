@@ -4,8 +4,11 @@ import { SplineScene } from "@/components/ui/splite";
 import { Card } from "@/components/ui/card"
 import { Spotlight } from "@/components/ui/spotlight"
 import { Button } from "@/components/ui/button"
+import { useNavigate } from "react-router-dom";
  
 export function SplineSceneBasic() {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col gap-8">
       {/* Hero Section */}
@@ -30,7 +33,10 @@ export function SplineSceneBasic() {
               our agents are ready to join your team and amplify your capabilities.
             </p>
             <div className="mt-8 flex gap-4">
-              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+              <Button 
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                onClick={() => navigate('/marketplace')}
+              >
                 Hire Agents
               </Button>
               <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">
@@ -81,7 +87,10 @@ export function SplineSceneBasic() {
             Start with a single agent or build a complete AI workforce. Scale up or down as needed,
             with flexible hiring options designed for your success.
           </p>
-          <Button className="bg-white text-black hover:bg-neutral-200">
+          <Button 
+            className="bg-white text-black hover:bg-neutral-200"
+            onClick={() => navigate('/marketplace')}
+          >
             Get Started Now
           </Button>
         </div>
