@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Search, Code, Image, MessageSquare, Database, Network, Robot, Activity, Globe, Target } from "lucide-react";
+import { Search, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target } from "lucide-react";
 
 const agents = [
   {
@@ -44,7 +44,7 @@ const agents = [
     tasksCompleted: "45.1K tasks completed"
   },
   {
-    icon: <Robot className="w-12 h-12 text-cyan-500" />,
+    icon: <Bot className="w-12 h-12 text-cyan-500" />,
     name: "Customer Service Bot",
     author: "@servicebot",
     description: "Handles customer inquiries and support tickets 24/7",
