@@ -64,3 +64,27 @@ export const generateImage = async (prompt: string) => {
     throw error;
   }
 };
+
+export const generateContent = async (prompt: string) => {
+  try {
+    console.log("Generating content for prompt:", prompt);
+    const apiKey = await getGeminiApiKey();
+    console.log("Successfully retrieved API key");
+    
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent([
+      {
+        role: "user",
+        parts: [{ text: `Please write content based on this prompt: ${prompt}` }],
+      },
+    ]);
+    const response = await result.response;
+    const text = response.text();
+    console.log("Received content generation response:", text);
+    return text;
+  } catch (error) {
+    console.error("Error generating content:", error);
+    throw error;
+  }
+};

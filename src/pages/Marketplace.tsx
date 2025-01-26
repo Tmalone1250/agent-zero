@@ -19,7 +19,8 @@ const agents = [
   {
     icon: <MessageSquare className="w-12 h-12 text-primary" />,
     name: "Content Writer",
-    description: "Writes engaging content fast"
+    description: "Writes engaging content fast",
+    path: "/content-writer"
   },
   {
     icon: <Database className="w-12 h-12 text-primary" />,
