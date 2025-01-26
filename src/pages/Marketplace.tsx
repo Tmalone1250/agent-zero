@@ -4,7 +4,7 @@ import { Search, Code, Image, MessageSquare, Database, Network, Bot, Activity, G
 
 const agents = [
   {
-    icon: <Code className="w-12 h-12 text-blue-500" />,
+    icon: <Code className="w-12 h-12 text-primary" />,
     name: "Code Assistant",
     author: "@codemaster",
     description: "Expert at writing, reviewing, and optimizing code across multiple languages",
@@ -12,7 +12,7 @@ const agents = [
     tasksCompleted: "42.3K tasks completed"
   },
   {
-    icon: <Image className="w-12 h-12 text-green-500" />,
+    icon: <Image className="w-12 h-12 text-primary" />,
     name: "Image Generator",
     author: "@artisan",
     description: "Creates custom images and graphics based on detailed descriptions",
@@ -20,7 +20,7 @@ const agents = [
     tasksCompleted: "63.2K tasks completed"
   },
   {
-    icon: <MessageSquare className="w-12 h-12 text-purple-500" />,
+    icon: <MessageSquare className="w-12 h-12 text-primary" />,
     name: "Content Writer",
     author: "@wordsmith",
     description: "Crafts engaging blog posts, articles, and marketing copy",
@@ -28,7 +28,7 @@ const agents = [
     tasksCompleted: "31.5K tasks completed"
   },
   {
-    icon: <Database className="w-12 h-12 text-orange-500" />,
+    icon: <Database className="w-12 h-12 text-primary" />,
     name: "Data Analyzer",
     author: "@datawhiz",
     description: "Processes and analyzes large datasets to extract valuable insights",
@@ -36,7 +36,7 @@ const agents = [
     tasksCompleted: "28.7K tasks completed"
   },
   {
-    icon: <Network className="w-12 h-12 text-red-500" />,
+    icon: <Network className="w-12 h-12 text-primary" />,
     name: "SEO Optimizer",
     author: "@seomaster",
     description: "Optimizes content and structure for better search engine rankings",
@@ -44,7 +44,7 @@ const agents = [
     tasksCompleted: "45.1K tasks completed"
   },
   {
-    icon: <Bot className="w-12 h-12 text-cyan-500" />,
+    icon: <Bot className="w-12 h-12 text-primary" />,
     name: "Customer Service Bot",
     author: "@servicebot",
     description: "Handles customer inquiries and support tickets 24/7",
@@ -52,7 +52,7 @@ const agents = [
     tasksCompleted: "92.4K tasks completed"
   },
   {
-    icon: <Activity className="w-12 h-12 text-yellow-500" />,
+    icon: <Activity className="w-12 h-12 text-primary" />,
     name: "Market Analyst",
     author: "@marketpro",
     description: "Analyzes market trends and provides investment insights",
@@ -60,7 +60,7 @@ const agents = [
     tasksCompleted: "15.8K tasks completed"
   },
   {
-    icon: <Globe className="w-12 h-12 text-indigo-500" />,
+    icon: <Globe className="w-12 h-12 text-primary" />,
     name: "Translation Expert",
     author: "@linguist",
     description: "Translates content across multiple languages while preserving context",
@@ -68,7 +68,7 @@ const agents = [
     tasksCompleted: "73.6K tasks completed"
   },
   {
-    icon: <Search className="w-12 h-12 text-pink-500" />,
+    icon: <Search className="w-12 h-12 text-primary" />,
     name: "Research Assistant",
     author: "@researcher",
     description: "Conducts thorough research and creates detailed reports",
@@ -76,7 +76,7 @@ const agents = [
     tasksCompleted: "34.9K tasks completed"
   },
   {
-    icon: <Target className="w-12 h-12 text-emerald-500" />,
+    icon: <Target className="w-12 h-12 text-primary" />,
     name: "Lead Generator",
     author: "@leadhunter",
     description: "Identifies and qualifies potential business leads",
@@ -87,28 +87,28 @@ const agents = [
 
 const Marketplace = () => {
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-background p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">AI Agent Marketplace</h1>
-          <p className="text-xl text-gray-600">Discover and hire AI agents for your specific needs</p>
+          <h1 className="text-4xl font-bold text-primary mb-4">AI Agent Marketplace</h1>
+          <p className="text-xl text-muted-foreground">Discover and hire AI agents for your specific needs</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {agents.map((agent, index) => (
-            <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-card border-border">
               <div className="p-6">
-                <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-4 mx-auto">
+                <div className="flex items-center justify-center w-20 h-20 rounded-full bg-secondary mb-4 mx-auto">
                   {agent.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 text-center mb-2">{agent.name}</h3>
-                <p className="text-sm text-gray-500 text-center mb-4">By {agent.author}</p>
-                <p className="text-gray-600 text-center mb-4">{agent.description}</p>
-                <div className="text-sm text-gray-500 text-center mb-4">
+                <h3 className="text-xl font-semibold text-primary text-center mb-2">{agent.name}</h3>
+                <p className="text-sm text-muted-foreground text-center mb-4">By {agent.author}</p>
+                <p className="text-muted-foreground text-center mb-4">{agent.description}</p>
+                <div className="text-sm text-muted-foreground text-center mb-4">
                   <p>{agent.credits}</p>
                   <p>{agent.tasksCompleted}</p>
                 </div>
-                <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white">
+                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
                   Hire
                 </Button>
               </div>
