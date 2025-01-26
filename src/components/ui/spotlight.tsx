@@ -7,6 +7,7 @@ type SpotlightProps = {
   className?: string;
   size?: number;
   springOptions?: SpringOptions;
+  fill?: string;
 };
 
 export function Spotlight({
