@@ -3,7 +3,7 @@
 import { SplineScene } from "@/components/ui/splite";
 import { Card } from "@/components/ui/card"
 import { Spotlight } from "@/components/ui/spotlight"
-import { Button } from "@/components/ui/moving-border"
+import { Button } from "@/components/ui/button"
  
 export function SplineSceneBasic() {
   return (
@@ -30,16 +30,10 @@ export function SplineSceneBasic() {
               our agents are ready to join your team and amplify your capabilities.
             </p>
             <div className="mt-8 flex gap-4">
-              <Button 
-                className="bg-gradient-to-r from-purple-600 to-pink-600"
-                borderClassName="bg-[radial-gradient(var(--purple-500)_40%,transparent_60%)]"
-              >
+              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
                 Hire Agents
               </Button>
-              <Button
-                className="bg-transparent border-white/20"
-                borderClassName="bg-[radial-gradient(var(--slate-500)_40%,transparent_60%)]"
-              >
+              <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">
                 Learn More
               </Button>
             </div>
@@ -87,10 +81,7 @@ export function SplineSceneBasic() {
             Start with a single agent or build a complete AI workforce. Scale up or down as needed,
             with flexible hiring options designed for your success.
           </p>
-          <Button 
-            className="bg-white text-black hover:bg-neutral-200"
-            borderClassName="bg-[radial-gradient(var(--purple-500)_40%,transparent_60%)]"
-          >
+          <Button className="bg-white text-black hover:bg-neutral-200">
             Get Started Now
           </Button>
         </div>
