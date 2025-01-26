@@ -121,17 +121,21 @@ export const generateSeoOptimization = async (content: string) => {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const result = await model.generateContent(`
-      As an SEO expert, please optimize the following content for search engines. 
-      Provide the optimized version along with a list of improvements made:
+      As an SEO expert, please analyze the following URL or content and provide a detailed report:
 
       ${content}
       
       Please include:
-      1. Optimized content with proper keyword density
-      2. Meta description suggestion
-      3. Title tag suggestion
-      4. Key SEO improvements made
-      5. Additional recommendations
+      1. Overall SEO grade (A+, A, B, etc.)
+      2. Detailed analysis of:
+         - Meta tags and descriptions
+         - Keyword optimization
+         - Content quality
+         - Technical SEO factors
+         - Loading speed considerations
+         - Mobile responsiveness
+      3. Specific recommendations for improvement
+      4. Priority levels for each recommendation
     `);
     const response = await result.response;
     const text = response.text();
