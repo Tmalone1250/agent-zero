@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { generateSeoOptimization } from "@/services/gemini";
-import { Loader2, Check, X, AlertCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 const SeoOptimizer = () => {
@@ -83,6 +83,41 @@ const SeoOptimizer = () => {
     );
   };
 
+  const formatAnalysisText = (text: string) => {
+    return text.split('\n').map((line, index) => {
+      // Handle headers
+      if (line.startsWith('##')) {
+        return (
+          <h2 key={index} className="text-xl font-bold text-white mt-4 mb-2">
+            {line.replace(/##/g, '').trim()}
+          </h2>
+        );
+      }
+      // Handle subheaders with asterisks
+      if (line.startsWith('**') && line.endsWith('**')) {
+        return (
+          <h3 key={index} className="text-lg font-semibold text-white/90 mt-3 mb-1">
+            {line.replace(/\*\*/g, '').trim()}
+          </h3>
+        );
+      }
+      // Handle bullet points
+      if (line.trim().startsWith('*')) {
+        return (
+          <li key={index} className="text-neutral-300 ml-4 my-1">
+            {line.replace(/^\*/, '').trim()}
+          </li>
+        );
+      }
+      // Regular text
+      return (
+        <p key={index} className="text-neutral-400 my-1">
+          {line.trim()}
+        </p>
+      );
+    });
+  };
+
   return (
     <div className="min-h-screen bg-black/[0.96] p-8">
       <div className="max-w-6xl mx-auto">
@@ -124,40 +159,22 @@ const SeoOptimizer = () => {
         </Card>
 
         {results && (
-          <div className="mt-8 grid gap-8">
+          <div className="mt-8 space-y-6">
             <Card className="p-6 bg-black/[0.96] border-white/10">
-              <div className="flex items-center gap-8">
-                {renderGradeCircle("A+")}
-                <div>
-                  <h2 className="text-2xl font-semibold text-white mb-2">
+              <div className="flex items-start gap-8">
+                <div className="flex-shrink-0">
+                  {renderGradeCircle(results.match(/Grade: ([A-F][+-]?)/)?.[1] || "A")}
+                </div>
+                <div className="flex-grow">
+                  <h2 className="text-2xl font-semibold text-white mb-4">
                     Your page is good!
                   </h2>
-                  <p className="text-neutral-400">
-                    {results}
-                  </p>
+                  <div className="prose prose-invert max-w-none">
+                    {formatAnalysisText(results)}
+                  </div>
                 </div>
               </div>
             </Card>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {["On-Page SEO", "Links", "Performance", "Social", "Technical"].map((category) => (
-                <Card key={category} className="p-6 bg-black/[0.96] border-white/10">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-medium text-white">{category}</h3>
-                    <div className="h-8 w-8 rounded-full bg-green-500/20 flex items-center justify-center">
-                      <Check className="h-5 w-5 text-green-500" />
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    {/* Placeholder for detailed metrics */}
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-neutral-400">Score</span>
-                      <span className="text-white">95/100</span>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
           </div>
         )}
       </div>
