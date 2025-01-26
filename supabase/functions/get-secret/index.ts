@@ -6,23 +6,29 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
+    console.log("Received request for secret");
     const { secretName } = await req.json()
     
     if (!secretName) {
+      console.error("No secret name provided");
       throw new Error('Secret name is required')
     }
 
+    console.log(`Fetching secret: ${secretName}`);
     const secret = Deno.env.get(secretName)
     
     if (!secret) {
+      console.error(`Secret ${secretName} not found`);
       throw new Error(`Secret ${secretName} not found`)
     }
 
+    console.log("Successfully retrieved secret");
     return new Response(
       JSON.stringify({ [secretName]: secret }),
       { 
@@ -31,6 +37,7 @@ serve(async (req) => {
       },
     )
   } catch (error) {
+    console.error("Error in get-secret function:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
