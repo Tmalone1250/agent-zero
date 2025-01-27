@@ -4,21 +4,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToast } from "@/components/ui/use-toast";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
     
     try {
       const { error } = await supabase.auth.signUp({
@@ -26,19 +23,13 @@ const SignUp = () => {
         password,
       });
 
-      if (error) {
-        if (error.message === "User already registered") {
-          setError("This email is already registered. Please sign in instead.");
-          return;
-        }
-        throw error;
-      }
+      if (error) throw error;
       
       toast({
         title: "Success!",
         description: "Please check your email to verify your account.",
       });
-      navigate("/auth");
+      navigate("/signin");
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -55,11 +46,6 @@ const SignUp = () => {
       <Card className="w-full max-w-md p-8 bg-black/[0.96] border-white/10">
         <h2 className="text-2xl font-bold text-white mb-6 text-center">Sign Up</h2>
         <form onSubmit={handleSignUp} className="space-y-4">
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
           <div>
             <Input
               type="email"
@@ -90,7 +76,7 @@ const SignUp = () => {
         </form>
         <p className="mt-4 text-center text-neutral-400">
           Already have an account?{" "}
-          <Link to="/auth" className="text-purple-400 hover:text-purple-300">
+          <Link to="/signin" className="text-purple-400 hover:text-purple-300">
             Sign In
           </Link>
         </p>
