@@ -70,7 +70,7 @@ const Marketplace = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-black/[0.96] p-8">
+    <div className="min-h-screen bg-black/[0.96] p-8 pt-24">
       <div className="max-w-7xl mx-auto">
         <Link 
           to="/" 
