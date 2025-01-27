@@ -29,7 +29,7 @@ const SignUp = () => {
         title: "Success!",
         description: "Please check your email to verify your account.",
       });
-      navigate("/signin");
+      navigate("/dashboard");
     } catch (error: any) {
       toast({
         variant: "destructive",

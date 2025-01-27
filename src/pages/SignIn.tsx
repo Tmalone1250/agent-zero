@@ -25,7 +25,7 @@ const SignIn = () => {
 
       if (error) throw error;
       
-      navigate("/marketplace");
+      navigate("/dashboard");
     } catch (error: any) {
       toast({
         variant: "destructive",
