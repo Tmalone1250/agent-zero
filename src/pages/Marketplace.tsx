@@ -73,10 +73,10 @@ const Marketplace = () => {
     <div className="min-h-screen bg-black/[0.96] p-8 pt-24">
       <div className="max-w-7xl mx-auto">
         <Link 
-          to="/" 
+          to="/dashboard" 
           className="inline-block mb-8 text-purple-400 hover:text-purple-300 transition-colors"
         >
-          ← Back to home
+          ← Back to dashboard
         </Link>
         
         <div className="mb-12 text-center">
