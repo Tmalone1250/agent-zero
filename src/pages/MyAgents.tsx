@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -57,7 +57,7 @@ const MyAgents = () => {
 
         {hiredAgents.length === 0 ? (
           <Card className="bg-black/[0.96] border-white/10">
-            <CardContent className="p-6">
+            <div className="p-6">
               <div className="text-center py-4">
                 <p className="text-neutral-300 mb-4">
                   You haven't hired any agents yet
@@ -69,24 +69,32 @@ const MyAgents = () => {
                   Browse Marketplace
                 </Button>
               </div>
-            </CardContent>
+            </div>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {hiredAgents.map((agent) => (
-              <Card key={agent.id} className="bg-black/[0.96] border-white/10">
-                <CardHeader>
-                  <CardTitle className="text-white">{agent.agent_name}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-neutral-300">{agent.agent_description}</p>
+              <Card 
+                key={agent.id} 
+                className="overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-black/[0.96] border-white/10"
+              >
+                <div className="p-6">
+                  <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r from-purple-900/50 to-pink-900/50 mb-4 mx-auto">
+                    <Bot className="w-12 h-12 text-purple-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-white text-center mb-2">
+                    {agent.agent_name}
+                  </h3>
+                  <p className="text-neutral-300 text-center mb-4">
+                    {agent.agent_description}
+                  </p>
                   <Button 
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
                     onClick={() => navigate(agent.agent_path)}
                   >
-                    Open Agent
+                    View
                   </Button>
-                </CardContent>
+                </div>
               </Card>
             ))}
           </div>
