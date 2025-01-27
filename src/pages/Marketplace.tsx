@@ -55,12 +55,14 @@ const agents = [
   {
     icon: <Search className="w-12 h-12 text-primary" />,
     name: "Research Assistant",
-    description: "Fast comprehensive research helper"
+    description: "Fast comprehensive research helper",
+    path: "/research-assistant"
   },
   {
     icon: <Target className="w-12 h-12 text-primary" />,
     name: "Lead Generator",
-    description: "Identifies qualified business leads"
+    description: "Identifies qualified business leads",
+    path: "/lead-generator"
   }
 ];
 
