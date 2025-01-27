@@ -47,9 +47,12 @@ const LeadGenerator = () => {
   return (
     <div className="min-h-screen bg-black/[0.96] p-8">
       <div className="max-w-6xl mx-auto">
-        <Link to="/marketplace" className="inline-flex items-center text-neutral-400 hover:text-white mb-8">
+        <Link
+          to="/dashboard"
+          className="inline-flex items-center text-neutral-400 hover:text-white mb-8"
+        >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Marketplace
+          Back to Dashboard
         </Link>
 
         <div className="mb-12">
