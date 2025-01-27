@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Search, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft } from "lucide-react";
+import { Search, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -65,6 +65,12 @@ const agents = [
     name: "Lead Generator",
     description: "Identifies qualified business leads",
     path: "/lead-generator"
+  },
+  {
+    icon: <GraduationCap className="w-12 h-12 text-primary" />,
+    name: "Academic Assistant",
+    description: "Personalized learning support",
+    path: "/academic-assistant"
   }
 ];
 
