@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { Pen, Link as LinkIcon, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -22,7 +21,6 @@ interface UserProfile {
   title: string;
   role: string;
   company_website: string;
-  writing_style: string;
   linkedin_profile: string;
 }
 
@@ -37,7 +35,6 @@ const Profile = () => {
     title: "",
     role: "",
     company_website: "",
-    writing_style: "",
     linkedin_profile: "",
   });
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -70,7 +67,6 @@ const Profile = () => {
           title: data.title || "",
           role: data.role || "",
           company_website: data.company_website || "",
-          writing_style: data.writing_style || "",
           linkedin_profile: data.linkedin_profile || "",
         });
       }
@@ -93,7 +89,6 @@ const Profile = () => {
         title: profile.title,
         role: profile.role,
         company_website: profile.company_website,
-        writing_style: profile.writing_style,
         linkedin_profile: profile.linkedin_profile,
       })
       .eq("id", user.id);
@@ -166,7 +161,7 @@ const Profile = () => {
             <Card>
               <CardContent className="pt-6">
                 <p className="text-neutral-400 mb-6">
-                  Share who you are, your company website, your writing style, and your LinkedIn profile URL so that agents can better tailor their responses to your user context.
+                  Share who you are, your company website, and your LinkedIn profile URL so that agents can better tailor their responses to your user context.
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -239,15 +234,6 @@ const Profile = () => {
                     id="company_website"
                     value={profile.company_website}
                     onChange={(e) => setProfile({ ...profile, company_website: e.target.value })}
-                  />
-                </div>
-
-                <div className="space-y-2 mt-6">
-                  <Label htmlFor="writing_style">Writing Style</Label>
-                  <Textarea
-                    id="writing_style"
-                    value={profile.writing_style}
-                    onChange={(e) => setProfile({ ...profile, writing_style: e.target.value })}
                   />
                 </div>
 
