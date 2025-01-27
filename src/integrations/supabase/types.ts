@@ -38,19 +38,52 @@ export type Database = {
       }
       profiles: {
         Row: {
+          city: string | null
+          company_website: string | null
+          country: string | null
           created_at: string
           email: string | null
+          first_name: string | null
           id: string
+          last_name: string | null
+          linkedin_profile: string | null
+          notification_new_follower: boolean | null
+          notification_new_rating: boolean | null
+          role: string | null
+          title: string | null
+          writing_style: string | null
         }
         Insert: {
+          city?: string | null
+          company_website?: string | null
+          country?: string | null
           created_at?: string
           email?: string | null
+          first_name?: string | null
           id: string
+          last_name?: string | null
+          linkedin_profile?: string | null
+          notification_new_follower?: boolean | null
+          notification_new_rating?: boolean | null
+          role?: string | null
+          title?: string | null
+          writing_style?: string | null
         }
         Update: {
+          city?: string | null
+          company_website?: string | null
+          country?: string | null
           created_at?: string
           email?: string | null
+          first_name?: string | null
           id?: string
+          last_name?: string | null
+          linkedin_profile?: string | null
+          notification_new_follower?: boolean | null
+          notification_new_rating?: boolean | null
+          role?: string | null
+          title?: string | null
+          writing_style?: string | null
         }
         Relationships: []
       }

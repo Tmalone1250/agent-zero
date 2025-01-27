@@ -11,6 +11,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Pen, Bell, Link as LinkIcon, CreditCard, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import type { Tables } from "@/integrations/supabase/types";
+
+type Profile = Tables<'profiles'>;
 
 interface UserProfile {
   first_name: string;
