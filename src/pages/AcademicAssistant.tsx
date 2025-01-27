@@ -16,6 +16,7 @@ const AcademicAssistant = () => {
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -43,6 +44,7 @@ const AcademicAssistant = () => {
     }
 
     setFile(selectedFile);
+    setUploadProgress(0);
     toast({
       title: "File selected",
       description: `${selectedFile.name} ready for upload`,
@@ -60,15 +62,21 @@ const AcademicAssistant = () => {
     }
 
     setIsLoading(true);
+    setResponse("");
     try {
       let fileUrl = "";
       if (file) {
         const fileExt = file.name.split('.').pop();
         const fileName = `${crypto.randomUUID()}.${fileExt}`;
         
-        const { error: uploadError } = await supabase.storage
+        const { error: uploadError, data } = await supabase.storage
           .from('academic_files')
-          .upload(fileName, file);
+          .upload(fileName, file, {
+            onUploadProgress: (progress) => {
+              const percent = (progress.loaded / progress.total) * 100;
+              setUploadProgress(Math.round(percent));
+            }
+          });
 
         if (uploadError) {
           throw new Error(`Error uploading file: ${uploadError.message}`);
@@ -79,6 +87,11 @@ const AcademicAssistant = () => {
           .getPublicUrl(fileName);
           
         fileUrl = publicUrl;
+        
+        toast({
+          title: "File uploaded successfully",
+          description: "Processing document content...",
+        });
       }
 
       const prompt = `As an Academic Assistant, please help with the following:
@@ -105,6 +118,7 @@ const AcademicAssistant = () => {
       });
     } finally {
       setIsLoading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -140,9 +154,19 @@ const AcademicAssistant = () => {
                 className="bg-black/[0.96] border-white/10 text-white"
               />
               {file && (
-                <p className="mt-2 text-sm text-neutral-400">
-                  Selected file: {file.name}
-                </p>
+                <div className="mt-2">
+                  <p className="text-sm text-neutral-400">
+                    Selected file: {file.name}
+                  </p>
+                  {uploadProgress > 0 && uploadProgress < 100 && (
+                    <div className="w-full bg-gray-700 rounded-full h-2.5 mt-2">
+                      <div
+                        className="bg-blue-600 h-2.5 rounded-full"
+                        style={{ width: `${uploadProgress}%` }}
+                      ></div>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
             <Textarea

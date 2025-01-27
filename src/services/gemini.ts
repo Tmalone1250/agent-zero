@@ -138,7 +138,49 @@ export const generateContent = async (prompt: string) => {
     
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const result = await model.generateContent(`Please write content based on this prompt: ${prompt}`);
+
+    // Extract file URL if present in the prompt
+    const fileUrlMatch = prompt.match(/https:\/\/.*?\.(?:pdf|txt|docx)/i);
+    const fileUrl = fileUrlMatch ? fileUrlMatch[0] : null;
+
+    let documentContent = "";
+    if (fileUrl) {
+      try {
+        console.log("Attempting to fetch document content from:", fileUrl);
+        const response = await fetch(fileUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch document: ${response.statusText}`);
+        }
+        
+        // Get file extension
+        const fileExt = fileUrl.split('.').pop()?.toLowerCase();
+        
+        if (fileExt === 'txt') {
+          documentContent = await response.text();
+        } else {
+          // For PDF and DOCX, we'll need to inform the user about limitations
+          documentContent = `[Note: This is a ${fileExt?.toUpperCase()} file. Due to format limitations, only text content can be extracted.]`;
+        }
+        
+        console.log("Successfully fetched document content");
+      } catch (error) {
+        console.error("Error fetching document:", error);
+        throw new Error(`Failed to process document: ${error.message}`);
+      }
+    }
+
+    // Construct the final prompt
+    const finalPrompt = `
+      ${prompt}
+      
+      ${documentContent ? `Document Content:
+      ${documentContent}` : ''}
+      
+      Please provide a detailed analysis and response based on the above content.
+    `;
+
+    console.log("Sending final prompt to Gemini API");
+    const result = await model.generateContent(finalPrompt);
     const response = await result.response;
     const text = response.text();
     console.log("Received content generation response:", text);
