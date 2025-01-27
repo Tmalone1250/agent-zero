@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { User, Users, Store } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface HiredAgent {
   id: string;
@@ -16,6 +17,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [hiredAgents, setHiredAgents] = useState<HiredAgent[]>([]);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -37,6 +39,26 @@ const Dashboard = () => {
 
     fetchUserData();
   }, []);
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account.",
+      });
+      
+      navigate('/');
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error signing out",
+        description: error.message,
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black/[0.96] p-8 pt-24">
@@ -61,8 +83,8 @@ const Dashboard = () => {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
-              <p className="text-neutral-300 mb-4">
+            <CardContent className="space-y-4">
+              <p className="text-neutral-300">
                 View and manage your profile settings
               </p>
               <Button 
@@ -70,6 +92,13 @@ const Dashboard = () => {
                 onClick={() => navigate('/profile')}
               >
                 View Profile
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full border-white/10 text-white hover:bg-white/5"
+                onClick={handleSignOut}
+              >
+                Sign Out
               </Button>
             </CardContent>
           </Card>
