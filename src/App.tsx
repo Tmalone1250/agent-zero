@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Marketplace from "./pages/Marketplace";
 import MyAgents from "./pages/MyAgents";
 import AcademicAssistant from "./pages/AcademicAssistant";
@@ -18,6 +18,8 @@ const App = () => {
         <Route path="/research-writing" element={<ResearchWriting />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/auth/*" element={<Auth />} />
+        <Route path="/signin" element={<Navigate to="/auth/signin" replace />} />
+        <Route path="/signup" element={<Navigate to="/auth/signup" replace />} />
       </Routes>
     </Router>
   );
