@@ -187,22 +187,41 @@ export const generateMarketAnalysis = async (prompt: string) => {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const result = await model.generateContent(`
-      As a market analysis expert, please analyze the following request and provide detailed insights:
+      As a market analysis expert, please provide a detailed analysis with current, up-to-date information for:
       
       ${prompt}
       
-      Please include:
-      1. Market Overview
-      2. Key Trends and Patterns
-      3. Competitive Analysis
-      4. Growth Opportunities
-      5. Potential Risks
-      6. Strategic Recommendations
+      Please structure your response in JSON format with the following fields:
+      {
+        "analysis": "detailed text analysis",
+        "stockTrend": [{"date": "string", "price": number}],
+        "marketComparison": [{"company": "string", "revenue": number}],
+        "marketShare": [{"name": "string", "value": number}]
+      }
+      
+      Ensure all data is current and relevant to today's market conditions.
+      Include specific dates, numbers, and percentages.
+      Base your analysis on the most recent market data available.
     `);
+    
     const response = await result.response;
     const text = response.text();
     console.log("Received market analysis response:", text);
-    return text;
+    
+    try {
+      // Try to parse the response as JSON
+      const jsonResponse = JSON.parse(text);
+      return jsonResponse;
+    } catch (parseError) {
+      console.error("Error parsing JSON response:", parseError);
+      // If parsing fails, return the text response in our expected format
+      return {
+        analysis: text,
+        stockTrend: [],
+        marketComparison: [],
+        marketShare: []
+      };
+    }
   } catch (error) {
     console.error("Error generating market analysis:", error);
     throw error;
