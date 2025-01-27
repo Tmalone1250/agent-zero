@@ -156,25 +156,17 @@ const Dashboard = () => {
                     className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                     onClick={() => navigate('/marketplace')}
                   >
-                    View My Agents
+                    Browse Marketplace
                   </Button>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {hiredAgents.map((agent) => (
-                    <Card key={agent.id} className="bg-black/[0.96] border-white/10">
-                      <CardContent className="p-4">
-                        <h3 className="text-white font-semibold mb-2">{agent.agent_name}</h3>
-                        <p className="text-neutral-300 text-sm mb-3">{agent.agent_description}</p>
-                        <Button 
-                          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                          onClick={() => navigate(agent.agent_path)}
-                        >
-                          View Agent
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
+                  <Button 
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    onClick={() => navigate('/my-agents')}
+                  >
+                    View My Agents
+                  </Button>
                 </div>
               )}
             </CardContent>

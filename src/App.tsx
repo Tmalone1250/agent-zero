@@ -6,6 +6,7 @@ import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Marketplace from "./pages/Marketplace";
+import MyAgents from "./pages/MyAgents";
 import CodeAssistant from "./pages/CodeAssistant";
 import ContentWriter from "./pages/ContentWriter";
 import CustomerServiceBot from "./pages/CustomerServiceBot";
@@ -29,6 +30,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/marketplace" element={<Marketplace />} />
+        <Route path="/my-agents" element={<MyAgents />} />
         <Route path="/code-assistant" element={<CodeAssistant />} />
         <Route path="/content-writer" element={<ContentWriter />} />
         <Route path="/customer-service-bot" element={<CustomerServiceBot />} />
