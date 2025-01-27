@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -18,18 +18,29 @@ const SignUp = () => {
     setLoading(true);
     
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: window.location.origin + '/auth/callback'
+        }
       });
 
       if (error) throw error;
-      
-      toast({
-        title: "Success!",
-        description: "Please check your email to verify your account.",
-      });
-      navigate("/dashboard");
+
+      if (data.user) {
+        toast({
+          title: "Success!",
+          description: "Please check your email to verify your account.",
+        });
+        // Don't navigate immediately, let user verify their email first
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Something went wrong. Please try again.",
+        });
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -76,7 +87,7 @@ const SignUp = () => {
         </form>
         <p className="mt-4 text-center text-neutral-400">
           Already have an account?{" "}
-          <Link to="/signin" className="text-purple-400 hover:text-purple-300">
+          <Link to="/auth/signin" className="text-purple-400 hover:text-purple-300">
             Sign In
           </Link>
         </p>
