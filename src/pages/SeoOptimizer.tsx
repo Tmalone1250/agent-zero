@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { generateSeoOptimization } from "@/services/gemini";
-import { Loader2, Check } from "lucide-react";
+import { Loader2, Check, ArrowLeft } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { Link } from "react-router-dom";
 
 const SeoOptimizer = () => {
   const [url, setUrl] = useState("");
@@ -121,6 +122,16 @@ const SeoOptimizer = () => {
   return (
     <div className="min-h-screen bg-black/[0.96] p-8">
       <div className="max-w-6xl mx-auto">
+        <div className="flex items-center gap-4 mb-8">
+          <Link 
+            to="/marketplace" 
+            className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Marketplace
+          </Link>
+        </div>
+
         <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-8">
           SEO Analyzer
         </h1>
