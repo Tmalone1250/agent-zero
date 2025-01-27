@@ -47,7 +47,7 @@ export function SplineSceneBasic() {
           {/* Left content */}
           <div className="flex-1 p-8 relative z-10 flex flex-col justify-center">
             <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">
-              AI Agents
+              Agent Zero
               <br />
               <span className="text-2xl md:text-4xl bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text">
                 Your Digital Workforce
