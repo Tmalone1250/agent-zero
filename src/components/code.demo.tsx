@@ -5,9 +5,34 @@ import { Card } from "@/components/ui/card"
 import { Spotlight } from "@/components/ui/spotlight"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
  
 export function SplineSceneBasic() {
   const navigate = useNavigate();
+  const [session, setSession] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleGetStarted = () => {
+    if (session) {
+      navigate('/dashboard');
+    } else {
+      navigate('/signin');
+    }
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -35,7 +60,7 @@ export function SplineSceneBasic() {
             <div className="mt-8 flex gap-4">
               <Button 
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                onClick={() => navigate('/marketplace')}
+                onClick={handleGetStarted}
               >
                 Get Started
               </Button>
