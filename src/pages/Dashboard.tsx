@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Users } from "lucide-react";
+import { User, Users, Store } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -45,7 +45,7 @@ const Dashboard = () => {
           Dashboard
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Profile Card */}
           <Card className="bg-black/[0.96] border-white/10">
             <CardHeader>
@@ -70,6 +70,34 @@ const Dashboard = () => {
                 onClick={() => navigate('/profile')}
               >
                 View Profile
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Marketplace Card */}
+          <Card className="bg-black/[0.96] border-white/10">
+            <CardHeader>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-purple-900/50 to-pink-900/50">
+                  <Store className="w-6 h-6 text-purple-400" />
+                </div>
+                <div>
+                  <CardTitle className="text-white">AI Agent Marketplace</CardTitle>
+                  <CardDescription className="text-neutral-400">
+                    Discover and hire AI agents
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-neutral-300 mb-4">
+                Browse our collection of specialized AI agents ready to help with your tasks
+              </p>
+              <Button 
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                onClick={() => navigate('/marketplace')}
+              >
+                View Marketplace
               </Button>
             </CardContent>
           </Card>
