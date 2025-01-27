@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { generateContent } from "@/services/gemini";
+import { supabase } from "@/integrations/supabase/client";
+import { Input } from "@/components/ui/input";
 
 const AcademicAssistant = () => {
   const navigate = useNavigate();
@@ -13,12 +15,45 @@ const AcademicAssistant = () => {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'text/plain', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(selectedFile.type)) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a PDF, TXT, or DOCX file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (selectedFile.size > 10 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload a file smaller than 10MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setFile(selectedFile);
+    toast({
+      title: "File selected",
+      description: `${selectedFile.name} ready for upload`,
+    });
+  };
 
   const handleSubmit = async () => {
-    if (!input.trim()) {
+    if (!input.trim() && !file) {
       toast({
         title: "Input required",
-        description: "Please enter your academic query or content to process.",
+        description: "Please enter your academic query or upload a file to process.",
         variant: "destructive",
       });
       return;
@@ -26,8 +61,29 @@ const AcademicAssistant = () => {
 
     setIsLoading(true);
     try {
+      let fileUrl = "";
+      if (file) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${crypto.randomUUID()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('academic_files')
+          .upload(fileName, file);
+
+        if (uploadError) {
+          throw new Error(`Error uploading file: ${uploadError.message}`);
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('academic_files')
+          .getPublicUrl(fileName);
+          
+        fileUrl = publicUrl;
+      }
+
       const prompt = `As an Academic Assistant, please help with the following:
       ${input}
+      ${fileUrl ? `\nPlease also analyze the content from this file: ${fileUrl}` : ''}
       
       Please provide a comprehensive response that includes:
       1. A clear explanation of the topic
@@ -73,6 +129,22 @@ const AcademicAssistant = () => {
 
         <Card className="bg-black/[0.96] border-white/10 mb-6">
           <CardContent className="p-6">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-white mb-2">
+                Upload Document (Optional)
+              </label>
+              <Input
+                type="file"
+                accept=".pdf,.txt,.docx"
+                onChange={handleFileChange}
+                className="bg-black/[0.96] border-white/10 text-white"
+              />
+              {file && (
+                <p className="mt-2 text-sm text-neutral-400">
+                  Selected file: {file.name}
+                </p>
+              )}
+            </div>
             <Textarea
               placeholder="Enter your academic query, text to summarize, or topic to learn about..."
               className="min-h-[150px] mb-4 bg-black/[0.96] border-white/10 text-white"
@@ -84,7 +156,14 @@ const AcademicAssistant = () => {
               onClick={handleSubmit}
               disabled={isLoading}
             >
-              {isLoading ? "Processing..." : "Get Academic Assistance"}
+              {isLoading ? (
+                <>
+                  <Upload className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Get Academic Assistance"
+              )}
             </Button>
           </CardContent>
         </Card>
