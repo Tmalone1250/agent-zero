@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Marketplace from "./pages/Marketplace";
 import MyAgents from "./pages/MyAgents";
 import AcademicAssistant from "./pages/AcademicAssistant";
+import ResearchWriting from "./pages/ResearchWriting";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
 
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/my-agents" element={<MyAgents />} />
         <Route path="/academic-assistant" element={<AcademicAssistant />} />
+        <Route path="/research-writing" element={<ResearchWriting />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/auth/*" element={<Auth />} />
       </Routes>
