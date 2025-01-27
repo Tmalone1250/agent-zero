@@ -5,12 +5,13 @@ import AcademicAssistant from "./pages/AcademicAssistant";
 import ResearchWriting from "./pages/ResearchWriting";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
+import Index from "./pages/Index";
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Marketplace />} />
+        <Route path="/" element={<Index />} />
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/my-agents" element={<MyAgents />} />
         <Route path="/academic-assistant" element={<AcademicAssistant />} />
