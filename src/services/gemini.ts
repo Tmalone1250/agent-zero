@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { supabase } from "@/integrations/supabase/client";
+import { parseDocument } from "@/utils/documentParser";
 
 const getGeminiApiKey = async () => {
   console.log("Fetching Gemini API key from Supabase...");
@@ -146,26 +147,24 @@ export const generateContent = async (prompt: string) => {
     let documentContent = "";
     if (fileUrl) {
       try {
-        console.log("Attempting to fetch document content from:", fileUrl);
+        console.log("Attempting to fetch document from:", fileUrl);
         const response = await fetch(fileUrl);
-        const contentType = response.headers.get('content-type');
         
         if (!response.ok) {
           throw new Error(`Failed to fetch document: ${response.statusText}`);
         }
 
-        if (contentType?.includes('text/plain')) {
-          documentContent = await response.text();
-        } else {
-          // For PDF and DOCX files, we'll need to extract text content differently
-          // For now, we'll include the file type in the prompt
-          const fileExt = fileUrl.split('.').pop()?.toUpperCase();
-          documentContent = `[This is a ${fileExt} document. Please analyze its content and structure based on the user's request.]`;
-        }
-        
-        console.log("Successfully processed document content");
+        // Convert the response to a File object
+        const blob = await response.blob();
+        const fileName = fileUrl.split('/').pop() || 'document';
+        const file = new File([blob], fileName, { type: response.headers.get('content-type') || '' });
+
+        // Parse the document content
+        console.log("Parsing document content...");
+        documentContent = await parseDocument(file);
+        console.log("Successfully parsed document content");
       } catch (error) {
-        console.error("Error fetching document:", error);
+        console.error("Error processing document:", error);
         documentContent = "Error: Unable to process the document content. Please ensure the file is accessible and try again.";
       }
     }
