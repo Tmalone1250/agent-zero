@@ -27,6 +27,39 @@ const getGeminiApiKey = async () => {
   }
 };
 
+export const generateResearch = async (topic: string) => {
+  try {
+    console.log("Generating research for topic:", topic);
+    const apiKey = await getGeminiApiKey();
+    console.log("Successfully retrieved API key");
+    
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent(`
+      As a research assistant, please provide a comprehensive analysis of the following topic:
+      
+      ${topic}
+      
+      Please structure your response with:
+      1. Executive Summary
+      2. Key Findings
+      3. Detailed Analysis
+      4. Supporting Evidence
+      5. Conclusions
+      6. Recommendations for Further Research
+      
+      Format the response in clear, organized sections with academic rigor.
+    `);
+    const response = await result.response;
+    const text = response.text();
+    console.log("Received research response:", text);
+    return text;
+  } catch (error) {
+    console.error("Error generating research:", error);
+    throw error;
+  }
+};
+
 export const generateCodeAssistantResponse = async (prompt: string) => {
   try {
     console.log("Generating code assistant response for prompt:", prompt);

@@ -13,6 +13,7 @@ import SeoOptimizer from "./pages/SeoOptimizer";
 import CustomerServiceBot from "./pages/CustomerServiceBot";
 import MarketAnalyst from "./pages/MarketAnalyst";
 import TranslationExpert from "./pages/TranslationExpert";
+import ResearchAssistant from "./pages/ResearchAssistant";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/customer-service-bot" element={<CustomerServiceBot />} />
           <Route path="/market-analyst" element={<MarketAnalyst />} />
           <Route path="/translation-expert" element={<TranslationExpert />} />
+          <Route path="/research-assistant" element={<ResearchAssistant />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
