@@ -14,7 +14,7 @@ const App = () => {
         <Route path="/my-agents" element={<MyAgents />} />
         <Route path="/academic-assistant" element={<AcademicAssistant />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/auth" element={<Auth />} />
+        <Route path="/auth/*" element={<Auth />} />
       </Routes>
     </Router>
   );
