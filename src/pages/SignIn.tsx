@@ -102,7 +102,7 @@ const SignIn = () => {
         <Button
           type="button"
           variant="outline"
-          className="w-full border-white/10 text-white hover:bg-white/5"
+          className="w-full border-white/10 text-black hover:text-white hover:bg-white/5"
           onClick={handleGoogleSignIn}
         >
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
