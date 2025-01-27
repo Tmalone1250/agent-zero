@@ -7,13 +7,6 @@ const Index = () => {
     <div className="min-h-screen bg-black p-4">
       <div className="max-w-6xl mx-auto">
         <SplineSceneBasic />
-        <div className="absolute top-4 right-4">
-          <Link to="/auth/signin">
-            <Button variant="outline" className="text-white border-white hover:bg-white/10">
-              Get Started
-            </Button>
-          </Link>
-        </div>
       </div>
     </div>
   );
