@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Bot } from "lucide-react";
+import { ArrowLeft, Bot, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface HiredAgent {
   id: string;
@@ -17,6 +27,7 @@ const MyAgents = () => {
   const navigate = useNavigate();
   const [hiredAgents, setHiredAgents] = useState<HiredAgent[]>([]);
   const { toast } = useToast();
+  const [agentToDelete, setAgentToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchHiredAgents = async () => {
@@ -38,6 +49,31 @@ const MyAgents = () => {
 
     fetchHiredAgents();
   }, [toast]);
+
+  const handleDeleteAgent = async () => {
+    if (!agentToDelete) return;
+
+    const { error } = await supabase
+      .from('hired_agents')
+      .delete()
+      .eq('id', agentToDelete);
+
+    if (error) {
+      console.error('Error deleting agent:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete the agent. Please try again.",
+      });
+    } else {
+      setHiredAgents(hiredAgents.filter(agent => agent.id !== agentToDelete));
+      toast({
+        title: "Success",
+        description: "Agent successfully deleted.",
+      });
+    }
+    setAgentToDelete(null);
+  };
 
   return (
     <div className="min-h-screen bg-black/[0.96] p-8 pt-24">
@@ -76,8 +112,16 @@ const MyAgents = () => {
             {hiredAgents.map((agent) => (
               <Card 
                 key={agent.id} 
-                className="overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-black/[0.96] border-white/10"
+                className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-black/[0.96] border-white/10"
               >
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-2 top-2 text-neutral-400 hover:text-white hover:bg-red-500/20"
+                  onClick={() => setAgentToDelete(agent.id)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
                 <div className="p-6">
                   <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r from-purple-900/50 to-pink-900/50 mb-4 mx-auto">
                     <Bot className="w-12 h-12 text-purple-400" />
@@ -99,6 +143,26 @@ const MyAgents = () => {
             ))}
           </div>
         )}
+
+        <AlertDialog open={!!agentToDelete} onOpenChange={() => setAgentToDelete(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete this Agent?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-red-500 hover:bg-red-600"
+                onClick={handleDeleteAgent}
+              >
+                Confirm
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
