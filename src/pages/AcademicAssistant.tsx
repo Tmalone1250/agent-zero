@@ -69,14 +69,23 @@ const AcademicAssistant = () => {
         const fileExt = file.name.split('.').pop();
         const fileName = `${crypto.randomUUID()}.${fileExt}`;
         
+        // Create a mock progress update
+        const progressInterval = setInterval(() => {
+          setUploadProgress(prev => {
+            if (prev >= 90) {
+              clearInterval(progressInterval);
+              return prev;
+            }
+            return prev + 10;
+          });
+        }, 100);
+
         const { error: uploadError, data } = await supabase.storage
           .from('academic_files')
-          .upload(fileName, file, {
-            onUploadProgress: (progress) => {
-              const percent = (progress.loaded / progress.total) * 100;
-              setUploadProgress(Math.round(percent));
-            }
-          });
+          .upload(fileName, file);
+
+        clearInterval(progressInterval);
+        setUploadProgress(100);
 
         if (uploadError) {
           throw new Error(`Error uploading file: ${uploadError.message}`);
