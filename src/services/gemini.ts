@@ -148,35 +148,36 @@ export const generateContent = async (prompt: string) => {
       try {
         console.log("Attempting to fetch document content from:", fileUrl);
         const response = await fetch(fileUrl);
+        const contentType = response.headers.get('content-type');
+        
         if (!response.ok) {
           throw new Error(`Failed to fetch document: ${response.statusText}`);
         }
-        
-        // Get file extension
-        const fileExt = fileUrl.split('.').pop()?.toLowerCase();
-        
-        if (fileExt === 'txt') {
+
+        if (contentType?.includes('text/plain')) {
           documentContent = await response.text();
         } else {
-          // For PDF and DOCX, we'll need to inform the user about limitations
-          documentContent = `[Note: This is a ${fileExt?.toUpperCase()} file. Due to format limitations, only text content can be extracted.]`;
+          // For PDF and DOCX files, we'll need to extract text content differently
+          // For now, we'll include the file type in the prompt
+          const fileExt = fileUrl.split('.').pop()?.toUpperCase();
+          documentContent = `[This is a ${fileExt} document. Please analyze its content and structure based on the user's request.]`;
         }
         
-        console.log("Successfully fetched document content");
+        console.log("Successfully processed document content");
       } catch (error) {
         console.error("Error fetching document:", error);
-        throw new Error(`Failed to process document: ${error.message}`);
+        documentContent = "Error: Unable to process the document content. Please ensure the file is accessible and try again.";
       }
     }
 
-    // Construct the final prompt
+    // Construct the final prompt with document content
     const finalPrompt = `
       ${prompt}
       
       ${documentContent ? `Document Content:
-      ${documentContent}` : ''}
+      ${documentContent}
       
-      Please provide a detailed analysis and response based on the above content.
+      Please analyze this document content and provide a detailed response based on the user's request.` : ''}
     `;
 
     console.log("Sending final prompt to Gemini API");
