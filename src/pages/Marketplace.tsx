@@ -37,7 +37,8 @@ const agents = [
   {
     icon: <Bot className="w-12 h-12 text-primary" />,
     name: "Customer Service Bot",
-    description: "24/7 customer support assistant"
+    description: "24/7 customer support assistant",
+    path: "/customer-service-bot"
   },
   {
     icon: <Activity className="w-12 h-12 text-primary" />,
