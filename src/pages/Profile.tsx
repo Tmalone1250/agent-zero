@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Pen, Link as LinkIcon, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Profile = Tables<'profiles'>;
@@ -40,6 +40,7 @@ const Profile = () => {
     writing_style: "",
     linkedin_profile: "",
   });
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -104,6 +105,7 @@ const Profile = () => {
         description: "Failed to save user context",
         variant: "destructive",
       });
+      setSaveSuccess(false);
       return;
     }
 
@@ -111,6 +113,12 @@ const Profile = () => {
       title: "Success",
       description: "User context saved successfully",
     });
+    setSaveSuccess(true);
+    
+    // Reset the success message after 3 seconds
+    setTimeout(() => {
+      setSaveSuccess(false);
+    }, 3000);
   };
 
   const handleDeleteAccount = async () => {
@@ -252,12 +260,19 @@ const Profile = () => {
                   />
                 </div>
 
-                <Button 
-                  className="mt-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                  onClick={handleSaveUserContext}
-                >
-                  Save
-                </Button>
+                <div className="mt-6 flex items-center gap-4">
+                  <Button 
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    onClick={handleSaveUserContext}
+                  >
+                    Save
+                  </Button>
+                  {saveSuccess && (
+                    <span className="text-green-500 animate-fade-in">
+                      Saved
+                    </span>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
