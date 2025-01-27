@@ -5,17 +5,6 @@ import { User, Users, Store } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 
 interface HiredAgent {
   id: string;
@@ -104,33 +93,13 @@ const Dashboard = () => {
               >
                 View Profile
               </Button>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full border-white/10 text-black hover:text-white hover:bg-white/5"
-                  >
-                    Sign Out
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className="bg-black/[0.96] border-white/10">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="text-white">Are you sure you would like to sign out?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      You will be redirected back to the landing page.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel className="border-white/10 text-white hover:bg-white/5">Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={handleSignOut}
-                      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                    >
-                      Confirm
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              <Button
+                variant="outline"
+                className="w-full border-white/10 text-black hover:text-white hover:bg-white/5"
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </Button>
             </CardContent>
           </Card>
 
