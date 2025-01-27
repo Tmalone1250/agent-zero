@@ -187,47 +187,22 @@ export const generateMarketAnalysis = async (prompt: string) => {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const result = await model.generateContent(`
-      As a market analysis expert, please analyze the following request and provide detailed insights in a structured format:
+      As a market analysis expert, please analyze the following request and provide detailed insights:
       
       ${prompt}
       
-      Please provide your response in the following JSON format:
-      {
-        "summary": "Brief overview of the analysis",
-        "marketSize": {
-          "current": "Current market size in billions",
-          "projected": "Projected market size in billions",
-          "growthRate": "Annual growth rate percentage"
-        },
-        "keyTrends": ["trend1", "trend2", "trend3"],
-        "competitorData": [
-          {"name": "Competitor 1", "marketShare": 25},
-          {"name": "Competitor 2", "marketShare": 20}
-        ],
-        "monthlyGrowth": [
-          {"month": "Jan", "growth": 10},
-          {"month": "Feb", "growth": 15}
-        ],
-        "recommendations": ["rec1", "rec2", "rec3"]
-      }
+      Please include:
+      1. Market Overview
+      2. Key Trends and Patterns
+      3. Competitive Analysis
+      4. Growth Opportunities
+      5. Potential Risks
+      6. Strategic Recommendations
     `);
     const response = await result.response;
     const text = response.text();
     console.log("Received market analysis response:", text);
-    
-    try {
-      return JSON.parse(text);
-    } catch (error) {
-      console.error("Error parsing JSON response:", error);
-      return {
-        summary: text,
-        marketSize: { current: 0, projected: 0, growthRate: 0 },
-        keyTrends: [],
-        competitorData: [],
-        monthlyGrowth: [],
-        recommendations: []
-      };
-    }
+    return text;
   } catch (error) {
     console.error("Error generating market analysis:", error);
     throw error;
