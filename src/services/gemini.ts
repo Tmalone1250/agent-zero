@@ -178,6 +178,31 @@ export const generateCustomerServiceResponse = async (message: string) => {
   }
 };
 
+export const generateTranslation = async (text: string, targetLanguage: string) => {
+  try {
+    console.log("Generating translation for text:", text, "to language:", targetLanguage);
+    const apiKey = await getGeminiApiKey();
+    console.log("Successfully retrieved API key");
+    
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent(`
+      Please translate the following text to ${targetLanguage}:
+      
+      ${text}
+      
+      Please provide only the translated text without any additional comments or explanations.
+    `);
+    const response = await result.response;
+    const translatedText = response.text();
+    console.log("Received translation:", translatedText);
+    return translatedText;
+  } catch (error) {
+    console.error("Error generating translation:", error);
+    throw error;
+  }
+};
+
 export const generateMarketAnalysis = async (prompt: string) => {
   try {
     console.log("Generating market analysis for prompt:", prompt);

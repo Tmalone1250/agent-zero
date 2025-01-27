@@ -49,7 +49,8 @@ const agents = [
   {
     icon: <Globe className="w-12 h-12 text-primary" />,
     name: "Translation Expert",
-    description: "Translates multiple languages instantly"
+    description: "Translates multiple languages instantly",
+    path: "/translation-expert"
   },
   {
     icon: <Search className="w-12 h-12 text-primary" />,
