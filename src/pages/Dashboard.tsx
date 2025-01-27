@@ -95,7 +95,7 @@ const Dashboard = () => {
               </Button>
               <Button
                 variant="outline"
-                className="w-full border-white/10 text-white hover:bg-white/5"
+                className="w-full border-white/10 text-black hover:text-white hover:bg-white/5"
                 onClick={handleSignOut}
               >
                 Sign Out
