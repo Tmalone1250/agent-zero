@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Search, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target } from "lucide-react";
+import { Search, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -124,6 +124,15 @@ const Marketplace = () => {
   return (
     <div className="min-h-screen bg-black/[0.96] p-8 pt-24">
       <div className="max-w-7xl mx-auto">
+        <Button
+          variant="ghost"
+          className="mb-6 text-white hover:text-white/80"
+          onClick={() => navigate('/dashboard')}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Dashboard
+        </Button>
+
         <div className="mb-12 text-center">
           <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
             AI Agents
