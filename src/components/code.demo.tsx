@@ -39,7 +39,10 @@ export function SplineSceneBasic() {
               >
                 Hire Agents
               </Button>
-              <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">
+              <Button 
+                variant="outline" 
+                className="text-neutral-400 border-white/20 hover:bg-black hover:text-white transition-colors"
+              >
                 Learn More
               </Button>
             </div>
