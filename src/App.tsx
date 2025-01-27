@@ -10,6 +10,7 @@ import ImageGenerator from "./pages/ImageGenerator";
 import ContentWriter from "./pages/ContentWriter";
 import DataAnalyzer from "./pages/DataAnalyzer";
 import SeoOptimizer from "./pages/SeoOptimizer";
+import CustomerServiceBot from "./pages/CustomerServiceBot";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/content-writer" element={<ContentWriter />} />
           <Route path="/data-analyzer" element={<DataAnalyzer />} />
           <Route path="/seo-optimizer" element={<SeoOptimizer />} />
+          <Route path="/customer-service-bot" element={<CustomerServiceBot />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
