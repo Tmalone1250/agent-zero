@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { generateCodeAssistantResponse } from "@/services/gemini";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -9,7 +8,6 @@ const CodeAssistant = () => {
   const [prompt, setPrompt] = useState("");
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,14 +35,6 @@ const CodeAssistant = () => {
   return (
     <div className="min-h-screen bg-black/[0.96] p-8">
       <div className="max-w-3xl mx-auto">
-        <Button 
-          onClick={() => navigate("/marketplace")}
-          variant="ghost" 
-          className="mb-8 text-white hover:text-purple-400"
-        >
-          ← Back to Marketplace
-        </Button>
-
         <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
           Code Assistant
         </h1>
