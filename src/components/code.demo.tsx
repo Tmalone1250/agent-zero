@@ -30,7 +30,7 @@ export function SplineSceneBasic() {
     if (session) {
       navigate('/dashboard');
     } else {
-      navigate('/signin');
+      navigate('/auth/signin');
     }
   };
 
