@@ -177,3 +177,34 @@ export const generateCustomerServiceResponse = async (message: string) => {
     throw error;
   }
 };
+
+export const generateMarketAnalysis = async (prompt: string) => {
+  try {
+    console.log("Generating market analysis for prompt:", prompt);
+    const apiKey = await getGeminiApiKey();
+    console.log("Successfully retrieved API key");
+    
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent(`
+      As a market analysis expert, please analyze the following request and provide detailed insights:
+      
+      ${prompt}
+      
+      Please include:
+      1. Market Overview
+      2. Key Trends and Patterns
+      3. Competitive Analysis
+      4. Growth Opportunities
+      5. Potential Risks
+      6. Strategic Recommendations
+    `);
+    const response = await result.response;
+    const text = response.text();
+    console.log("Received market analysis response:", text);
+    return text;
+  } catch (error) {
+    console.error("Error generating market analysis:", error);
+    throw error;
+  }
+};

@@ -43,7 +43,8 @@ const agents = [
   {
     icon: <Activity className="w-12 h-12 text-primary" />,
     name: "Market Analyst",
-    description: "Analyzes market trends expertly"
+    description: "Analyzes market trends expertly",
+    path: "/market-analyst"
   },
   {
     icon: <Globe className="w-12 h-12 text-primary" />,
