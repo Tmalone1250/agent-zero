@@ -120,10 +120,14 @@ const Profile = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { error } = await supabase.auth.admin.deleteUser(user.id);
+    // First, delete the user's profile
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .delete()
+      .eq('id', user.id);
 
-    if (error) {
-      console.error("Error deleting account:", error);
+    if (profileError) {
+      console.error("Error deleting profile:", profileError);
       toast({
         title: "Error",
         description: "Failed to delete account",
@@ -132,8 +136,25 @@ const Profile = () => {
       return;
     }
 
-    await supabase.auth.signOut();
+    // Then sign out the user
+    const { error: signOutError } = await supabase.auth.signOut();
+    
+    if (signOutError) {
+      console.error("Error signing out:", signOutError);
+      toast({
+        title: "Error",
+        description: "Failed to sign out",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Finally, redirect to home page
     navigate("/");
+    toast({
+      title: "Success",
+      description: "Your account has been deleted",
+    });
   };
 
   return (
