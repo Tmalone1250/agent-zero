@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const agents = [
   {
@@ -72,6 +72,13 @@ const Marketplace = () => {
   return (
     <div className="min-h-screen bg-black/[0.96] p-8">
       <div className="max-w-7xl mx-auto">
+        <Link 
+          to="/" 
+          className="inline-block mb-8 text-purple-400 hover:text-purple-300 transition-colors"
+        >
+          ← Back to home
+        </Link>
+        
         <div className="mb-12 text-center">
           <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
             AI Agents
