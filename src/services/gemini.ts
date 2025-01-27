@@ -193,7 +193,7 @@ export const generateMarketAnalysis = async (prompt: string) => {
       
       Please structure your response in JSON format with the following fields:
       {
-        "analysis": "detailed text analysis",
+        "analysis": "detailed text analysis in plain text format, no markdown or formatting",
         "stockTrend": [{"date": "string", "price": number}],
         "marketComparison": [{"company": "string", "revenue": number}],
         "marketShare": [{"name": "string", "value": number}]
@@ -202,6 +202,7 @@ export const generateMarketAnalysis = async (prompt: string) => {
       Ensure all data is current and relevant to today's market conditions.
       Include specific dates, numbers, and percentages.
       Base your analysis on the most recent market data available.
+      The analysis should be in plain text format without any special formatting or markdown.
     `);
     
     const response = await result.response;
