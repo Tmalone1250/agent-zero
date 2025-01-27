@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Pen, Link as LinkIcon, AlertTriangle } from "lucide-react";
+import { Pen, Link as LinkIcon, AlertTriangle, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { Tables } from "@/integrations/supabase/types";
@@ -139,6 +139,16 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-black/[0.96] p-8 pt-24">
       <div className="max-w-7xl mx-auto">
+        <div className="flex items-center gap-4 mb-8">
+          <Link 
+            to="/dashboard" 
+            className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Dashboard
+          </Link>
+        </div>
+        
         <h1 className="text-4xl font-bold text-white mb-8">User Settings</h1>
         
         <Tabs defaultValue="user-context" className="space-y-6">
