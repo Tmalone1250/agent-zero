@@ -340,3 +340,32 @@ export const generateMarketAnalysis = async (prompt: string) => {
     throw error;
   }
 };
+
+export const analyzeJobSearch = async (params: {
+  jobPlatform: string;
+  keywords: string;
+  jobType: string;
+  location: string;
+  resumeContent?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
+  portfolioUrl?: string;
+}) => {
+  try {
+    console.log("Analyzing job search with parameters:", params);
+    
+    const { data, error } = await supabase.functions.invoke('job-search', {
+      body: params
+    });
+    
+    if (error) {
+      console.error("Error from job-search function:", error);
+      throw new Error(`Failed to analyze job search: ${error.message}`);
+    }
+    
+    return data.analysis;
+  } catch (error) {
+    console.error("Error in analyzeJobSearch:", error);
+    throw error;
+  }
+};

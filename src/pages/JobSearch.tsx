@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { ArrowLeft, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { analyzeJobSearch } from "@/services/gemini";
 
 const JobSearch = () => {
   const navigate = useNavigate();
@@ -22,15 +23,27 @@ const JobSearch = () => {
   const [jobType, setJobType] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [resume, setResume] = useState<File | null>(null);
+  const [resumeContent, setResumeContent] = useState<string>("");
   const [linkedinUrl, setLinkedinUrl] = useState<string>("");
   const [githubUrl, setGithubUrl] = useState<string>("");
   const [portfolioUrl, setPortfolioUrl] = useState<string>("");
+  const [analysis, setAnalysis] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleResumeUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleResumeUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.type === "application/pdf" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
         setResume(file);
+        
+        // Read file content
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const text = e.target?.result as string;
+          setResumeContent(text);
+        };
+        reader.readAsText(file);
+        
         toast({
           title: "Resume uploaded",
           description: "Your resume has been successfully uploaded.",
@@ -47,23 +60,29 @@ const JobSearch = () => {
 
   const handleSearch = async () => {
     try {
+      setIsLoading(true);
       toast({
         title: "Starting job search",
         description: "Please wait while we analyze job opportunities...",
       });
       
-      // Here we would integrate with the AI service
-      console.log("Starting job search with parameters:", {
+      const result = await analyzeJobSearch({
         jobPlatform,
         keywords,
         jobType,
         location,
-        resume,
+        resumeContent,
         linkedinUrl,
         githubUrl,
         portfolioUrl,
       });
       
+      setAnalysis(result);
+      
+      toast({
+        title: "Analysis complete",
+        description: "Job opportunities have been analyzed.",
+      });
     } catch (error) {
       console.error("Error during job search:", error);
       toast({
@@ -71,6 +90,8 @@ const JobSearch = () => {
         title: "Error",
         description: "An error occurred during the job search. Please try again.",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -212,10 +233,20 @@ const JobSearch = () => {
           <Button
             className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
             onClick={handleSearch}
+            disabled={isLoading}
           >
-            Start Job Search
+            {isLoading ? "Analyzing..." : "Start Job Search"}
           </Button>
         </div>
+
+        {analysis && (
+          <Card className="mt-6 p-6 bg-black/[0.96] border-white/10">
+            <h2 className="text-2xl font-semibold text-white mb-4">Analysis Results</h2>
+            <div className="prose prose-invert max-w-none">
+              <pre className="whitespace-pre-wrap text-white">{analysis}</pre>
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );
