@@ -27,36 +27,46 @@ async function searchLinkedIn(keywords: string, location: string): Promise<JobPo
 
   try {
     // LinkedIn Jobs Search API endpoint
-    const url = new URL('https://api.linkedin.com/v2/jobSearch');
-    url.searchParams.append('keywords', keywords);
-    if (location) {
-      url.searchParams.append('location', location);
-    }
+    const baseUrl = 'https://api.linkedin.com/v2/jobSearch';
+    const queryParams = new URLSearchParams({
+      keywords: keywords,
+      location: location || '',
+      remoteFilter: 'REMOTE',  // Add remote filter
+      limit: '10'  // Limit results for testing
+    });
 
-    const response = await fetch(url.toString(), {
+    console.log("Making LinkedIn API request to:", `${baseUrl}?${queryParams}`);
+
+    const response = await fetch(`${baseUrl}?${queryParams}`, {
       headers: {
         'Authorization': `Bearer ${LINKEDIN_API_KEY}`,
         'Accept': 'application/json',
+        'X-Restli-Protocol-Version': '2.0.0'
       },
     });
 
     if (!response.ok) {
-      throw new Error(`LinkedIn API error: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error("LinkedIn API error response:", errorText);
+      throw new Error(`LinkedIn API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log("LinkedIn API response:", data);
+    console.log("LinkedIn API raw response:", JSON.stringify(data, null, 2));
 
     // Transform LinkedIn API response to our JobPosting format
-    return data.elements.map((job: any) => ({
-      title: job.title,
-      company: job.company.name,
-      location: job.location,
-      description: job.description,
-      url: job.applyUrl || job.referralUrl,
+    const jobs = data.elements?.map((job: any) => ({
+      title: job.title?.text || 'No Title',
+      company: job.companyDetails?.company?.name || 'Company Not Listed',
+      location: job.formattedLocation || location || 'Remote',
+      description: job.description?.text || 'No Description Available',
+      url: job.applyUrl || `https://www.linkedin.com/jobs/view/${job.entityUrn.split(':').pop()}`,
       source: 'LinkedIn',
-      contactInfo: job.applicationSettings?.email,
-    }));
+      contactInfo: job.applicationSettings?.email || undefined
+    })) || [];
+
+    console.log("Transformed LinkedIn jobs:", jobs);
+    return jobs;
   } catch (error) {
     console.error("Error fetching from LinkedIn:", error);
     throw error;
@@ -140,6 +150,7 @@ serve(async (req) => {
     try {
       if (!jobPlatform || jobPlatform.toLowerCase() === 'linkedin') {
         const linkedInJobs = await searchLinkedIn(keywords, location);
+        console.log(`Retrieved ${linkedInJobs.length} jobs from LinkedIn`);
         allJobs = [...allJobs, ...linkedInJobs];
       }
       
