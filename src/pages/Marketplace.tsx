@@ -1,17 +1,11 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Search, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, Briefcase } from "lucide-react";
+import { Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const agents = [
-  {
-    icon: <Briefcase className="w-12 h-12 text-purple-400" />,
-    name: "Job Search Assistant",
-    description: "AI-powered job search and application helper",
-    path: "/job-search"
-  },
   {
     icon: <Code className="w-12 h-12 text-purple-400" />,
     name: "Code Assistant",
@@ -61,16 +55,10 @@ const agents = [
     path: "/translation-expert"
   },
   {
-    icon: <Search className="w-12 h-12 text-primary" />,
+    icon: <Target className="w-12 h-12 text-primary" />,
     name: "Research Assistant",
     description: "Fast comprehensive research helper",
     path: "/research-assistant"
-  },
-  {
-    icon: <Target className="w-12 h-12 text-primary" />,
-    name: "Lead Generator",
-    description: "Identifies qualified business leads",
-    path: "/lead-generator"
   },
   {
     icon: <GraduationCap className="w-12 h-12 text-primary" />,
