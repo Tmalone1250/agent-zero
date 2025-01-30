@@ -10,25 +10,43 @@ interface ChatMessage {
 }
 
 interface ChatInterfaceProps {
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string) => Promise<string>;
+  isLoading?: boolean;
 }
 
-export const ChatInterface = ({ onSendMessage }: ChatInterfaceProps) => {
+export const ChatInterface = ({ onSendMessage, isLoading }: ChatInterfaceProps) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
 
-    const newMessage: ChatMessage = {
+    const userMessage: ChatMessage = {
       role: 'user',
       content: message
     };
 
-    setMessages([...messages, newMessage]);
-    onSendMessage(message);
+    setMessages(prev => [...prev, userMessage]);
     setMessage('');
+
+    try {
+      const response = await onSendMessage(message);
+      
+      const assistantMessage: ChatMessage = {
+        role: 'assistant',
+        content: response
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      const errorMessage: ChatMessage = {
+        role: 'assistant',
+        content: "I apologize, but I encountered an error processing your request. Please try again."
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    }
   };
 
   return (
@@ -44,7 +62,7 @@ export const ChatInterface = ({ onSendMessage }: ChatInterfaceProps) => {
                   : 'bg-gray-800/50 mr-auto max-w-[80%]'
               }`}
             >
-              <p className="text-white">{msg.content}</p>
+              <p className="text-white whitespace-pre-wrap">{msg.content}</p>
             </div>
           ))}
         </div>
@@ -52,10 +70,15 @@ export const ChatInterface = ({ onSendMessage }: ChatInterfaceProps) => {
           <Input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type your request (e.g., 'Find remote JavaScript jobs')"
+            placeholder="Ask about job opportunities (e.g., 'Find remote JavaScript jobs')"
             className="flex-1 bg-black/[0.96] border-white/10 text-white"
+            disabled={isLoading}
           />
-          <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
+          <Button 
+            type="submit" 
+            className="bg-purple-600 hover:bg-purple-700"
+            disabled={isLoading}
+          >
             <Send className="h-4 w-4" />
           </Button>
         </form>

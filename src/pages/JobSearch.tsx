@@ -5,7 +5,6 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { analyzeJobSearch } from "@/services/gemini";
-import { supabase } from "@/integrations/supabase/client";
 import { SearchParameters } from "@/components/job-search/SearchParameters";
 import { ProfileInformation } from "@/components/job-search/ProfileInformation";
 import { AnalysisResults } from "@/components/job-search/AnalysisResults";
@@ -79,6 +78,7 @@ const JobSearch = () => {
       });
       
       setAnalysis(result);
+      return result;
     } catch (error) {
       console.error("Error processing chat message:", error);
       toast({
@@ -86,6 +86,7 @@ const JobSearch = () => {
         title: "Error",
         description: "Failed to process your request. Please try again.",
       });
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -149,7 +150,7 @@ const JobSearch = () => {
         </div>
 
         <SavedJobs />
-        <ChatInterface onSendMessage={handleChatMessage} />
+        <ChatInterface onSendMessage={handleChatMessage} isLoading={isLoading} />
         <AnalysisResults analysis={analysis} />
       </div>
     </div>

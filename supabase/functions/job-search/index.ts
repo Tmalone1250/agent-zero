@@ -38,26 +38,29 @@ serve(async (req) => {
     const model = genAI.getGenerativeModel({ model: "gemini-pro" })
 
     const prompt = `
-      As a job search assistant, analyze the following information and provide relevant job opportunities:
+      As a job search assistant, analyze the following request and provide detailed job search insights:
       
-      Job Platform: ${jobPlatform}
-      Keywords: ${keywords}
-      Job Type: ${jobType}
-      Location: ${location}
+      User Request: ${keywords}
+      Job Platform: ${jobPlatform || 'Any'}
+      Job Type: ${jobType || 'Any'}
+      Location: ${location || 'Any'}
       
       Resume Summary: ${resumeContent ? `${resumeContent.substring(0, 500)}...` : 'Not provided'}
       LinkedIn Profile: ${linkedinUrl || 'Not provided'}
       GitHub Profile: ${githubUrl || 'Not provided'}
       Portfolio: ${portfolioUrl || 'Not provided'}
       
-      Please provide:
-      1. A list of 3-5 relevant job opportunities based on the platform and criteria
-      2. Match percentage for each role based on the provided information
-      3. A short, personalized elevator pitch (max 100 words)
-      4. 3 specific next steps to improve application success
+      Please provide a response in the following format:
+
+      1. A brief chat response summarizing the key findings
+      2. Followed by "---" as a separator
+      3. Then a detailed analysis including:
+         - List of relevant job opportunities with company names and contact info
+         - Match percentage for each role
+         - A personalized elevator pitch
+         - Specific next steps to improve application success
       
-      Format the response in clear sections with actionable insights.
-      Keep the response concise and focused on the most relevant opportunities.
+      Keep the chat response concise and conversational, with the detailed analysis below the separator.
     `
 
     console.log("Sending prompt to Gemini API");
