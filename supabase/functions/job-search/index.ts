@@ -23,6 +23,17 @@ serve(async (req) => {
       portfolioUrl
     } = await req.json()
 
+    console.log("Processing job search request with parameters:", {
+      jobPlatform,
+      keywords,
+      jobType,
+      location,
+      resumeLength: resumeContent?.length,
+      hasLinkedIn: !!linkedinUrl,
+      hasGithub: !!githubUrl,
+      hasPortfolio: !!portfolioUrl
+    });
+
     const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY') ?? '')
     const model = genAI.getGenerativeModel({ model: "gemini-pro" })
 
@@ -34,23 +45,26 @@ serve(async (req) => {
       Job Type: ${jobType}
       Location: ${location}
       
-      Resume Content: ${resumeContent || 'Not provided'}
+      Resume Summary: ${resumeContent ? `${resumeContent.substring(0, 500)}...` : 'Not provided'}
       LinkedIn Profile: ${linkedinUrl || 'Not provided'}
       GitHub Profile: ${githubUrl || 'Not provided'}
       Portfolio: ${portfolioUrl || 'Not provided'}
       
       Please provide:
-      1. A list of relevant job opportunities
-      2. Match percentage for each role
-      3. Personalized elevator pitch
-      4. Suggested next steps
+      1. A list of 3-5 relevant job opportunities based on the platform and criteria
+      2. Match percentage for each role based on the provided information
+      3. A short, personalized elevator pitch (max 100 words)
+      4. 3 specific next steps to improve application success
       
-      Format the response in clear sections with detailed insights.
+      Format the response in clear sections with actionable insights.
+      Keep the response concise and focused on the most relevant opportunities.
     `
 
+    console.log("Sending prompt to Gemini API");
     const result = await model.generateContent(prompt)
     const response = await result.response
     const text = response.text()
+    console.log("Received response from Gemini API");
 
     return new Response(
       JSON.stringify({ analysis: text }),
