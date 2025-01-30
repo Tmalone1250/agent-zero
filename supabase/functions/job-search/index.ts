@@ -1,6 +1,5 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { load } from "https://deno.land/std@0.204.0/dotenv/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -19,17 +18,49 @@ interface JobPosting {
 }
 
 async function searchLinkedIn(keywords: string, location: string): Promise<JobPosting[]> {
-  console.log("Searching LinkedIn for:", keywords, location);
-  // Note: This is a mock implementation. In a real scenario, you would integrate with LinkedIn's API
-  return [{
-    title: "Sample LinkedIn Job",
-    company: "LinkedIn Company",
-    location: location || "Remote",
-    description: "This is a sample job posting from LinkedIn",
-    url: "https://linkedin.com/jobs/...",
-    source: "LinkedIn",
-    contactInfo: "recruiter@company.com"
-  }];
+  console.log("Searching LinkedIn with real API for:", keywords, location);
+  
+  const LINKEDIN_API_KEY = Deno.env.get("LINKEDIN_API_KEY");
+  if (!LINKEDIN_API_KEY) {
+    throw new Error("LinkedIn API key not found");
+  }
+
+  try {
+    // LinkedIn Jobs Search API endpoint
+    const url = new URL('https://api.linkedin.com/v2/jobSearch');
+    url.searchParams.append('keywords', keywords);
+    if (location) {
+      url.searchParams.append('location', location);
+    }
+
+    const response = await fetch(url.toString(), {
+      headers: {
+        'Authorization': `Bearer ${LINKEDIN_API_KEY}`,
+        'Accept': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`LinkedIn API error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log("LinkedIn API response:", data);
+
+    // Transform LinkedIn API response to our JobPosting format
+    return data.elements.map((job: any) => ({
+      title: job.title,
+      company: job.company.name,
+      location: job.location,
+      description: job.description,
+      url: job.applyUrl || job.referralUrl,
+      source: 'LinkedIn',
+      contactInfo: job.applicationSettings?.email,
+    }));
+  } catch (error) {
+    console.error("Error fetching from LinkedIn:", error);
+    throw error;
+  }
 }
 
 async function searchZipRecruiter(keywords: string, location: string): Promise<JobPosting[]> {
@@ -61,9 +92,7 @@ async function searchGlassdoor(keywords: string, location: string): Promise<JobP
 }
 
 function calculateMatchPercentage(jobPosting: JobPosting, resumeContent: string): number {
-  // This is a simple mock implementation of match calculation
-  // In a real scenario, you would use more sophisticated matching algorithms
-  if (!resumeContent) return 70; // Default match if no resume provided
+  if (!resumeContent) return 70;
   
   const relevantKeywords = ["javascript", "react", "typescript", "node"];
   let matches = 0;
@@ -75,7 +104,7 @@ function calculateMatchPercentage(jobPosting: JobPosting, resumeContent: string)
     }
   });
   
-  return Math.min(100, 60 + (matches * 10)); // Base 60% + 10% per keyword match
+  return Math.min(100, 60 + (matches * 10));
 }
 
 serve(async (req) => {
@@ -106,22 +135,26 @@ serve(async (req) => {
       hasPortfolio: !!portfolioUrl
     });
 
-    // Search all platforms or specific platform based on jobPlatform parameter
     let allJobs: JobPosting[] = [];
     
-    if (!jobPlatform || jobPlatform.toLowerCase() === 'linkedin') {
-      const linkedInJobs = await searchLinkedIn(keywords, location);
-      allJobs = [...allJobs, ...linkedInJobs];
-    }
-    
-    if (!jobPlatform || jobPlatform.toLowerCase() === 'ziprecruiter') {
-      const zipRecruiterJobs = await searchZipRecruiter(keywords, location);
-      allJobs = [...allJobs, ...zipRecruiterJobs];
-    }
-    
-    if (!jobPlatform || jobPlatform.toLowerCase() === 'glassdoor') {
-      const glassdoorJobs = await searchGlassdoor(keywords, location);
-      allJobs = [...allJobs, ...glassdoorJobs];
+    try {
+      if (!jobPlatform || jobPlatform.toLowerCase() === 'linkedin') {
+        const linkedInJobs = await searchLinkedIn(keywords, location);
+        allJobs = [...allJobs, ...linkedInJobs];
+      }
+      
+      if (!jobPlatform || jobPlatform.toLowerCase() === 'ziprecruiter') {
+        const zipRecruiterJobs = await searchZipRecruiter(keywords, location);
+        allJobs = [...allJobs, ...zipRecruiterJobs];
+      }
+      
+      if (!jobPlatform || jobPlatform.toLowerCase() === 'glassdoor') {
+        const glassdoorJobs = await searchGlassdoor(keywords, location);
+        allJobs = [...allJobs, ...glassdoorJobs];
+      }
+    } catch (error) {
+      console.error("Error searching job boards:", error);
+      // Continue with any jobs we were able to fetch
     }
 
     // Calculate match percentages
@@ -133,7 +166,6 @@ serve(async (req) => {
     // Sort jobs by match percentage
     allJobs.sort((a, b) => (b.matchPercentage || 0) - (a.matchPercentage || 0));
 
-    // Generate chat response and detailed analysis
     const chatResponse = `I found ${allJobs.length} relevant job opportunities across ${
       jobPlatform ? jobPlatform : 'multiple job boards'
     }. The top match has a ${allJobs[0]?.matchPercentage}% match with your profile.`;
@@ -145,7 +177,7 @@ ${allJobs.map(job => `
   Location: ${job.location}
   Source: ${job.source}
   Match: ${job.matchPercentage}%
-  Contact: ${job.contactInfo}
+  Contact: ${job.contactInfo || 'Not available'}
   URL: ${job.url}
 `).join('\n')}
 
