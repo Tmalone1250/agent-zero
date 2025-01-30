@@ -1,3 +1,5 @@
+import { HiredAgentsTable, JobApplicationsTable, ProfilesTable, SavedJobsTable } from './tables'
+
 export type Json =
   | string
   | number
