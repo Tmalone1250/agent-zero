@@ -3,6 +3,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { generateCodeAssistantResponse } from "@/services/gemini";
 import { useToast } from "@/components/ui/use-toast";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 const CodeAssistant = () => {
   const [prompt, setPrompt] = useState("");
@@ -35,6 +37,14 @@ const CodeAssistant = () => {
   return (
     <div className="min-h-screen bg-black/[0.96] p-8">
       <div className="max-w-3xl mx-auto">
+        <Link
+          to="/dashboard"
+          className="inline-flex items-center text-neutral-400 hover:text-white mb-8"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Dashboard
+        </Link>
+
         <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
           Code Assistant
         </h1>

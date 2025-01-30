@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { supabase } from "@/integrations/supabase/client";
+import { parseDocument } from "@/utils/documentParser";
 
 const getGeminiApiKey = async () => {
   console.log("Fetching Gemini API key from Supabase...");
@@ -138,7 +139,48 @@ export const generateContent = async (prompt: string) => {
     
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const result = await model.generateContent(`Please write content based on this prompt: ${prompt}`);
+
+    // Extract file URL if present in the prompt
+    const fileUrlMatch = prompt.match(/https:\/\/.*?\.(?:pdf|txt|docx)/i);
+    const fileUrl = fileUrlMatch ? fileUrlMatch[0] : null;
+
+    let documentContent = "";
+    if (fileUrl) {
+      try {
+        console.log("Attempting to fetch document from:", fileUrl);
+        const response = await fetch(fileUrl);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch document: ${response.statusText}`);
+        }
+
+        // Convert the response to a File object
+        const blob = await response.blob();
+        const fileName = fileUrl.split('/').pop() || 'document';
+        const file = new File([blob], fileName, { type: response.headers.get('content-type') || '' });
+
+        // Parse the document content
+        console.log("Parsing document content...");
+        documentContent = await parseDocument(file);
+        console.log("Successfully parsed document content");
+      } catch (error) {
+        console.error("Error processing document:", error);
+        documentContent = "Error: Unable to process the document content. Please ensure the file is accessible and try again.";
+      }
+    }
+
+    // Construct the final prompt with document content
+    const finalPrompt = `
+      ${prompt}
+      
+      ${documentContent ? `Document Content:
+      ${documentContent}
+      
+      Please analyze this document content and provide a detailed response based on the user's request.` : ''}
+    `;
+
+    console.log("Sending final prompt to Gemini API");
+    const result = await model.generateContent(finalPrompt);
     const response = await result.response;
     const text = response.text();
     console.log("Received content generation response:", text);
@@ -295,6 +337,35 @@ export const generateMarketAnalysis = async (prompt: string) => {
     return text;
   } catch (error) {
     console.error("Error generating market analysis:", error);
+    throw error;
+  }
+};
+
+export const analyzeJobSearch = async (params: {
+  jobPlatform: string;
+  keywords: string;
+  jobType: string;
+  location: string;
+  resumeContent?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
+  portfolioUrl?: string;
+}) => {
+  try {
+    console.log("Analyzing job search with parameters:", params);
+    
+    const { data, error } = await supabase.functions.invoke('job-search', {
+      body: params
+    });
+    
+    if (error) {
+      console.error("Error from job-search function:", error);
+      throw new Error(`Failed to analyze job search: ${error.message}`);
+    }
+    
+    return data.analysis;
+  } catch (error) {
+    console.error("Error in analyzeJobSearch:", error);
     throw error;
   }
 };

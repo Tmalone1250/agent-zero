@@ -1,23 +1,21 @@
-export interface JobSearchParams {
-  query: string;
-  location?: string;
-  remote?: boolean;
-}
-
-export interface JobResult {
-  id: string;
+export interface JobPosting {
   title: string;
   company: string;
   location: string;
   description: string;
   url: string;
-  salary?: string;
-  postedDate?: string;
   source: string;
+  contactInfo?: string;
+  matchPercentage?: number;
 }
 
-export interface ApiResponse {
-  success: boolean;
-  data?: JobResult[];
-  error?: string;
+export interface JobSearchParams {
+  jobPlatform: string;
+  keywords: string;
+  jobType: string;
+  location: string;
+  resumeContent?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
+  portfolioUrl?: string;
 }

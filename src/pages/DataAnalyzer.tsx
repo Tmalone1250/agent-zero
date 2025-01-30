@@ -7,6 +7,8 @@ import { generateDataAnalysis } from "@/services/gemini";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import * as XLSX from 'xlsx';
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 const DataAnalyzer = () => {
   const [data, setData] = useState("");
@@ -110,13 +112,13 @@ const DataAnalyzer = () => {
 
   return (
     <div className="min-h-screen bg-black/[0.96] p-8">
-      <Button
-        variant="ghost"
-        className="mb-8 text-white hover:text-white/80"
-        onClick={() => navigate("/marketplace")}
+      <Link
+        to="/dashboard"
+        className="inline-flex items-center text-neutral-400 hover:text-white mb-8"
       >
-        ← Back to Marketplace
-      </Button>
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back to Dashboard
+      </Link>
 
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-white mb-8">Data Analyzer</h1>

@@ -1,57 +1,60 @@
-import { JobSearchParams, JobResult } from './types.ts';
+import { JobPosting } from './types';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-export async function searchLinkedInJobs(params: JobSearchParams): Promise<JobResult[]> {
-  try {
-    console.log('Searching LinkedIn jobs with params:', params);
-    
-    const apiKey = Deno.env.get('LINKEDIN_API_KEY');
-    if (!apiKey) {
-      throw new Error('LinkedIn API key not configured');
-    }
+export async function searchLinkedIn(keywords: string, location: string): Promise<JobPosting[]> {
+  console.log("Searching LinkedIn with real API for:", keywords, location);
+  
+  const LINKEDIN_API_KEY = Deno.env.get("LINKEDIN_API_KEY");
+  if (!LINKEDIN_API_KEY) {
+    throw new Error("LinkedIn API key not found");
+  }
 
-    // Construct search query
+  try {
+    const baseUrl = 'https://api.linkedin.com/v2/jobSearch';
     const queryParams = new URLSearchParams({
-      keywords: params.query,
-      location: params.location || 'United States',
-      remote: params.remote ? 'true' : 'false',
+      keywords: keywords,
+      location: location || '',
+      remoteFilter: 'REMOTE',
+      limit: '10'
     });
 
-    const response = await fetch(
-      `https://api.linkedin.com/v2/jobs/search?${queryParams.toString()}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Accept': 'application/json',
-        },
-      }
-    );
+    console.log("Making LinkedIn API request to:", `${baseUrl}?${queryParams}`);
+
+    const response = await fetch(`${baseUrl}?${queryParams}`, {
+      headers: {
+        'Authorization': `Bearer ${LINKEDIN_API_KEY}`,
+        'Accept': 'application/json',
+        'X-Restli-Protocol-Version': '2.0.0'
+      },
+    });
 
     if (!response.ok) {
-      throw new Error(`LinkedIn API error: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      console.error("LinkedIn API error response:", errorText);
+      throw new Error(`LinkedIn API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log('LinkedIn API response:', data);
+    console.log("LinkedIn API raw response:", JSON.stringify(data, null, 2));
 
-    return data.elements.map((job: any) => ({
-      id: job.id,
-      title: job.title,
-      company: job.company.name,
-      location: job.location,
-      description: job.description,
-      url: job.applyUrl,
-      postedDate: job.postedDate,
-      source: 'LinkedIn'
-    }));
+    const jobs = data.elements?.map((job: any) => ({
+      title: job.title?.text || 'No Title',
+      company: job.companyDetails?.company?.name || 'Company Not Listed',
+      location: job.formattedLocation || location || 'Remote',
+      description: job.description?.text || 'No Description Available',
+      url: job.applyUrl || `https://www.linkedin.com/jobs/view/${job.entityUrn.split(':').pop()}`,
+      source: 'LinkedIn',
+      contactInfo: job.applicationSettings?.email || undefined
+    })) || [];
+
+    console.log("Transformed LinkedIn jobs:", jobs);
+    return jobs;
   } catch (error) {
-    console.error('LinkedIn API error:', error);
+    console.error("Error fetching from LinkedIn:", error);
     throw error;
   }
 }
-
-export { corsHeaders };

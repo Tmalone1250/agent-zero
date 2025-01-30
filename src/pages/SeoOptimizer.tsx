@@ -122,15 +122,13 @@ const SeoOptimizer = () => {
   return (
     <div className="min-h-screen bg-black/[0.96] p-8">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
-          <Link 
-            to="/marketplace" 
-            className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Marketplace
-          </Link>
-        </div>
+        <Link
+          to="/dashboard"
+          className="inline-flex items-center text-neutral-400 hover:text-white mb-8"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Dashboard
+        </Link>
 
         <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-8">
           SEO Analyzer

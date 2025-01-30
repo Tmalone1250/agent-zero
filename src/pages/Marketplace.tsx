@@ -1,9 +1,17 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Search, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
+import { Search, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, Briefcase } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const agents = [
+  {
+    icon: <Briefcase className="w-12 h-12 text-purple-400" />,
+    name: "Job Search Assistant",
+    description: "AI-powered job search and application helper",
+    path: "/job-search"
+  },
   {
     icon: <Code className="w-12 h-12 text-purple-400" />,
     name: "Code Assistant",
@@ -63,22 +71,80 @@ const agents = [
     name: "Lead Generator",
     description: "Identifies qualified business leads",
     path: "/lead-generator"
+  },
+  {
+    icon: <GraduationCap className="w-12 h-12 text-primary" />,
+    name: "Academic Assistant",
+    description: "Personalized learning support",
+    path: "/academic-assistant"
   }
 ];
 
 const Marketplace = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleHireAgent = async (agent: typeof agents[0]) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to hire agents",
+          variant: "destructive"
+        });
+        navigate('/auth');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('hired_agents')
+        .insert({
+          user_id: user.id,
+          agent_name: agent.name,
+          agent_description: agent.description,
+          agent_path: agent.path
+        });
+
+      if (error) {
+        console.error('Error hiring agent:', error);
+        toast({
+          title: "Error",
+          description: "Failed to hire agent. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: `${agent.name} has been hired successfully!`
+      });
+      
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive"
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black/[0.96] p-8 pt-24">
       <div className="max-w-7xl mx-auto">
-        <Link 
-          to="/dashboard" 
-          className="inline-block mb-8 text-purple-400 hover:text-purple-300 transition-colors"
+        <Button
+          variant="ghost"
+          className="mb-6 text-white hover:text-white/80"
+          onClick={() => navigate('/dashboard')}
         >
-          ← Back to dashboard
-        </Link>
-        
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Dashboard
+        </Button>
+
         <div className="mb-12 text-center">
           <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
             AI Agents
@@ -106,7 +172,7 @@ const Marketplace = () => {
                 <p className="text-neutral-300 text-center mb-4">{agent.description}</p>
                 <Button 
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
-                  onClick={() => agent.path && navigate(agent.path)}
+                  onClick={() => handleHireAgent(agent)}
                 >
                   Hire
                 </Button>

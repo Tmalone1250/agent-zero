@@ -1,50 +1,26 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Index from "./pages/Index";
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import Dashboard from "./pages/Dashboard";
-import Profile from "./pages/Profile";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Marketplace from "./pages/Marketplace";
-import CodeAssistant from "./pages/CodeAssistant";
-import ContentWriter from "./pages/ContentWriter";
-import CustomerServiceBot from "./pages/CustomerServiceBot";
-import DataAnalyzer from "./pages/DataAnalyzer";
-import ImageGenerator from "./pages/ImageGenerator";
-import LeadGenerator from "./pages/LeadGenerator";
-import MarketAnalyst from "./pages/MarketAnalyst";
-import ResearchAssistant from "./pages/ResearchAssistant";
-import SeoOptimizer from "./pages/SeoOptimizer";
-import TranslationExpert from "./pages/TranslationExpert";
-import "./App.css";
+import MyAgents from "./pages/MyAgents";
+import AcademicAssistant from "./pages/AcademicAssistant";
+import Dashboard from "./pages/Dashboard";
+import Auth from "./pages/Auth";
+import Index from "./pages/Index";
+import JobSearch from "./pages/JobSearch";
 
-function App() {
+const App = () => {
   return (
-    <React.StrictMode>
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/marketplace" element={<Marketplace />} />
-          <Route path="/code-assistant" element={<CodeAssistant />} />
-          <Route path="/content-writer" element={<ContentWriter />} />
-          <Route path="/customer-service-bot" element={<CustomerServiceBot />} />
-          <Route path="/data-analyzer" element={<DataAnalyzer />} />
-          <Route path="/image-generator" element={<ImageGenerator />} />
-          <Route path="/lead-generator" element={<LeadGenerator />} />
-          <Route path="/market-analyst" element={<MarketAnalyst />} />
-          <Route path="/research-assistant" element={<ResearchAssistant />} />
-          <Route path="/seo-optimizer" element={<SeoOptimizer />} />
-          <Route path="/translation-expert" element={<TranslationExpert />} />
-        </Routes>
-      </Router>
-    </React.StrictMode>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/marketplace" element={<Marketplace />} />
+        <Route path="/my-agents" element={<MyAgents />} />
+        <Route path="/academic-assistant" element={<AcademicAssistant />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/auth/*" element={<Auth />} />
+        <Route path="/job-search" element={<JobSearch />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
