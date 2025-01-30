@@ -36,6 +36,42 @@ export type Database = {
         }
         Relationships: []
       }
+      job_applications: {
+        Row: {
+          applied_at: string | null
+          company_name: string
+          id: string
+          job_description: string | null
+          job_title: string
+          job_url: string | null
+          last_updated: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          applied_at?: string | null
+          company_name: string
+          id?: string
+          job_description?: string | null
+          job_title: string
+          job_url?: string | null
+          last_updated?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          applied_at?: string | null
+          company_name?: string
+          id?: string
+          job_description?: string | null
+          job_title?: string
+          job_url?: string | null
+          last_updated?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           city: string | null
@@ -84,6 +120,36 @@ export type Database = {
           role?: string | null
           title?: string | null
           writing_style?: string | null
+        }
+        Relationships: []
+      }
+      saved_jobs: {
+        Row: {
+          company_name: string
+          id: string
+          job_description: string | null
+          job_title: string
+          job_url: string | null
+          saved_at: string | null
+          user_id: string
+        }
+        Insert: {
+          company_name: string
+          id?: string
+          job_description?: string | null
+          job_title: string
+          job_url?: string | null
+          saved_at?: string | null
+          user_id: string
+        }
+        Update: {
+          company_name?: string
+          id?: string
+          job_description?: string | null
+          job_title?: string
+          job_url?: string | null
+          saved_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }

@@ -4,14 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Bookmark, ExternalLink, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Database } from "@/integrations/supabase/types";
 
-interface SavedJob {
-  id: string;
-  job_title: string;
-  company_name: string;
-  job_url: string;
-  saved_at: string;
-}
+type SavedJob = Database['public']['Tables']['saved_jobs']['Row'];
 
 export const SavedJobs = () => {
   const [savedJobs, setSavedJobs] = useState<SavedJob[]>([]);
@@ -35,7 +30,7 @@ export const SavedJobs = () => {
         description: "Failed to load saved jobs.",
       });
     } else {
-      setSavedJobs(data);
+      setSavedJobs(data || []);
     }
   };
 
@@ -85,7 +80,8 @@ export const SavedJobs = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => window.open(job.job_url, '_blank')}
+                onClick={() => job.job_url && window.open(job.job_url, '_blank')}
+                disabled={!job.job_url}
               >
                 <ExternalLink className="h-4 w-4" />
               </Button>
