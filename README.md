@@ -1,69 +1,73 @@
-# Welcome to your Lovable project
+# Agent Zero
 
-## Project info
+Agent Zero is an AI-powered web application designed to streamline and automate various tasks using intelligent agent-based workflows. It integrates with multiple APIs, providing users with a seamless and efficient experience.
 
-**URL**: https://lovable.dev/projects/bd3c5051-4db8-4411-bd72-0a8f50309f26
+## Features
 
-## How can I edit this code?
+- **AI-Powered Automation**: Uses advanced AI models to assist with tasks and inquiries.
+- **Integration with n8n**: Leverages n8n workflows for enhanced automation and connectivity.
+- **Dynamic Chat Interface**: A user-friendly chat UI for interacting with Agent Zero.
+- **Multi-Platform Support**: Designed to work across different devices and environments.
 
-There are several ways of editing your application.
+## Technologies Used
 
-**Use Lovable**
+- **Frontend**: React.js
+- **Backend**: Flask (Python)
+- **Automation**: n8n workflows
+- **APIs**: Various integrations for extended functionality
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/bd3c5051-4db8-4411-bd72-0a8f50309f26) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+Ensure you have the following installed:
+- Node.js & npm (for frontend)
+- Python & Flask (for backend)
+- n8n (for automation workflows)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
+#### Clone the Repository:
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+ git clone https://github.com/Tmalone1250/agent-zero.git
+ cd agent-zero
 ```
 
-**Edit a file directly in GitHub**
+#### Setup Frontend:
+```sh
+ cd frontend
+ npm install
+ npm start
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+#### Setup Backend:
+```sh
+ cd backend
+ pip install -r requirements.txt
+ flask run
+```
 
-**Use GitHub Codespaces**
+#### Setup n8n Workflow:
+Refer to the documentation on n8n to configure the necessary workflows.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Usage
 
-## What technologies are used for this project?
+1. Run both frontend and backend services.
+2. Access the web app at `http://localhost:3000`.
+3. Interact with Agent Zero through the chat interface.
 
-This project is built with .
+## Contributing
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Contributions are welcome! Feel free to fork the repository and submit pull requests.
 
-## How can I deploy this project?
+## License
 
-Simply open [Lovable](https://lovable.dev/projects/bd3c5051-4db8-4411-bd72-0a8f50309f26) and click on Share -> Publish.
+This project is licensed under the MIT License.
 
-## I want to use a custom domain - is that possible?
+## Contact
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+For inquiries or support, reach out via:
+- **Email**: [Trevor Malone](malonetrevor12@gmail.com)
+- **LinkedIn**: [Trevor Malone](https://www.linkedin.com/in/trevor-malone-70271b283)
+- **GitHub**: [Tmalone1250](https://github.com/Tmalone1250)
+- **Website**: [Agent Zero](https://agent-zero.lovable.com)
