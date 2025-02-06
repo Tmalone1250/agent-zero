@@ -5,6 +5,7 @@ import AcademicAssistant from "./pages/AcademicAssistant";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
 import Index from "./pages/Index";
+import DocumentFormatter from "./pages/DocumentFormatter";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/academic-assistant" element={<AcademicAssistant />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/auth/*" element={<Auth />} />
+        <Route path="/document-formatter" element={<DocumentFormatter />} />
       </Routes>
     </Router>
   );

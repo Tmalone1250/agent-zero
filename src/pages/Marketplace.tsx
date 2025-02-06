@@ -1,16 +1,16 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap } from "lucide-react";
+import { Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const agents = [
   {
-    icon: <Code className="w-12 h-12 text-purple-400" />,
-    name: "Code Assistant",
-    description: "Expert code optimization specialist",
-    path: "/code-assistant"
+    icon: <FileText className="w-12 h-12 text-purple-400" />,
+    name: "Document Formatter",
+    description: "Professional document formatting and styling",
+    path: "/document-formatter"
   },
   {
     icon: <Image className="w-12 h-12 text-primary" />,
