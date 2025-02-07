@@ -26,10 +26,29 @@ const SignUp = () => {
     };
   }, [navigate]);
 
+  const validatePassword = (password: string) => {
+    if (password.length < 6) {
+      return "Password must be at least 6 characters long";
+    }
+    return null;
+  };
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     console.log("Starting sign up process...");
+    
+    // Validate password before attempting signup
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      toast({
+        variant: "destructive",
+        title: "Invalid password",
+        description: passwordError,
+      });
+      setLoading(false);
+      return;
+    }
     
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -86,11 +105,12 @@ const SignUp = () => {
           <div>
             <Input
               type="password"
-              placeholder="Password"
+              placeholder="Password (min. 6 characters)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="bg-black/50 border-white/10 text-white"
               required
+              minLength={6}
             />
           </div>
           <Button
