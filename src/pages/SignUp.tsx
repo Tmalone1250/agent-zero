@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -45,9 +46,9 @@ const SignUp = () => {
       if (data.user) {
         toast({
           title: "Success!",
-          description: "Please check your email to verify your account.",
+          description: "Account created successfully.",
         });
-        // Stay on the same page until email is verified
+        navigate("/dashboard"); // Add redirect to dashboard after successful signup
       }
     } catch (error: any) {
       console.error("Unexpected error during sign up:", error);
