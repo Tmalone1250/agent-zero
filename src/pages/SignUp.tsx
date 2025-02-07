@@ -15,15 +15,14 @@ const SignUp = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is already signed in
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
         navigate('/dashboard');
       }
     });
 
     return () => {
-      authListener?.subscription.unsubscribe();
+      subscription.unsubscribe();
     };
   }, [navigate]);
 
@@ -36,12 +35,6 @@ const SignUp = () => {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-          data: {
-            email: email,
-          }
-        }
       });
 
       console.log("Sign up response:", { data, error });

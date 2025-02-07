@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -13,24 +14,49 @@ const SignIn = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        navigate('/dashboard');
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
-      
-      navigate("/dashboard");
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Error signing in",
+          description: error.message,
+        });
+        return;
+      }
+
+      if (data.user) {
+        toast({
+          title: "Success!",
+          description: "Signed in successfully. Redirecting...",
+        });
+        // The onAuthStateChange listener will handle the redirect
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Error signing in",
-        description: error.message,
+        title: "Error",
+        description: error.message || "An unexpected error occurred",
       });
     } finally {
       setLoading(false);
