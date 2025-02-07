@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,19 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Check if user is already signed in
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        navigate('/dashboard');
+      }
+    });
+
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,9 +59,9 @@ const SignUp = () => {
       if (data.user) {
         toast({
           title: "Success!",
-          description: "Account created successfully.",
+          description: "Account created successfully. Redirecting...",
         });
-        navigate("/dashboard"); // Add redirect to dashboard after successful signup
+        // The onAuthStateChange listener will handle the redirect
       }
     } catch (error: any) {
       console.error("Unexpected error during sign up:", error);
