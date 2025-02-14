@@ -15,6 +15,7 @@ import DataAnalyzer from "./pages/DataAnalyzer";
 import SeoOptimizer from "./pages/SeoOptimizer";
 import ContentWriter from "./pages/ContentWriter";
 import MarketAnalyst from "./pages/MarketAnalyst";
+import TestimonialTransformer from "./pages/TestimonialTransformer";
 
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
         <Route path="/seo-optimizer" element={<SeoOptimizer />} />
         <Route path="/content-writer" element={<ContentWriter />} />
         <Route path="/market-analyst" element={<MarketAnalyst />} />
+        <Route path="/testimonial-transformer" element={<TestimonialTransformer />} />
       </Routes>
     </Router>
   );

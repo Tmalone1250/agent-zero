@@ -1,11 +1,18 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, FileText } from "lucide-react";
+import { Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, FileText, Quote } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const agents = [
+  {
+    icon: <Quote className="w-12 h-12 text-purple-400" />,
+    name: "Testimonial Transformer",
+    description: "Transform testimonials into multiple content formats",
+    path: "/testimonial-transformer"
+  },
   {
     icon: <FileText className="w-12 h-12 text-purple-400" />,
     name: "Document Formatter",

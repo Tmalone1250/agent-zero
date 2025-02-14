@@ -369,3 +369,55 @@ export const analyzeJobSearch = async (params: {
     throw error;
   }
 };
+
+export const transformTestimonial = async (
+  testimonial: string,
+  outputType: string,
+  tone: string,
+  customerInfo: {
+    name: string;
+    company: string;
+    role: string;
+  }
+) => {
+  try {
+    console.log("Transforming testimonial:", {
+      testimonial,
+      outputType,
+      tone,
+      customerInfo,
+    });
+    
+    const apiKey = await getGeminiApiKey();
+    console.log("Successfully retrieved API key");
+    
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    
+    const systemPrompt = `As a content transformation expert, please transform this testimonial into a ${outputType} format with a ${tone} tone. The content should be engaging, professional, and highlight key benefits and outcomes.
+
+    Customer Information:
+    Name: ${customerInfo.name}
+    Company: ${customerInfo.company}
+    Role: ${customerInfo.role}
+
+    Please format the output appropriately for a ${outputType}, which could be:
+    - Social Proof: Short, impactful quote
+    - Case Study: Detailed success story
+    - Sales Deck: Presentation-ready content
+    - Email Campaign: Email marketing content
+    - Blog Post: Engaging article
+
+    Testimonial to transform:
+    ${testimonial}`;
+
+    const result = await model.generateContent(systemPrompt);
+    const response = await result.response;
+    const text = response.text();
+    console.log("Received transformed content:", text);
+    return text;
+  } catch (error) {
+    console.error("Error transforming testimonial:", error);
+    throw error;
+  }
+};
