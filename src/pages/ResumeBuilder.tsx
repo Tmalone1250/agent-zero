@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Upload, Download, Copy, Share2, Printer, LinkedinIcon } from "lucide-react";
@@ -85,6 +84,12 @@ const ResumeBuilder = () => {
 
   useEffect(() => {
     fetchTemplates();
+    
+    // Check for LinkedIn OAuth callback
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('code')) {
+      handleLinkedInCallback();
+    }
   }, []);
 
   const fetchTemplates = async () => {
@@ -115,10 +120,125 @@ const ResumeBuilder = () => {
   };
 
   const handleLinkedInImport = async () => {
-    toast({
-      title: "Coming Soon",
-      description: "LinkedIn import functionality will be available soon",
-    });
+    try {
+      // LinkedIn OAuth configuration
+      const clientId = await getLinkedInClientId();
+      const redirectUri = window.location.origin + '/resume-builder';
+      const scope = 'r_liteprofile r_emailaddress r_basicprofile';
+      const state = Math.random().toString(36).substring(7);
+      
+      // Store state for verification
+      localStorage.setItem('linkedin_oauth_state', state);
+      
+      // Redirect to LinkedIn OAuth
+      const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}&scope=${encodeURIComponent(scope)}`;
+      window.location.href = authUrl;
+    } catch (error) {
+      console.error('LinkedIn import error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to initiate LinkedIn import",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const getLinkedInClientId = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('get-secret', {
+        body: { secretName: 'LINKEDIN_API_KEY' },
+      });
+
+      if (error) throw error;
+      return data.LINKEDIN_API_KEY;
+    } catch (error) {
+      console.error('Error getting LinkedIn client ID:', error);
+      throw error;
+    }
+  };
+
+  const handleLinkedInCallback = async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
+    const storedState = localStorage.getItem('linkedin_oauth_state');
+
+    if (!code || !state || state !== storedState) {
+      return;
+    }
+
+    try {
+      // Exchange code for access token
+      const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          code,
+          redirect_uri: window.location.origin + '/resume-builder',
+          client_id: await getLinkedInClientId(),
+          client_secret: await getLinkedInSecret(),
+        }),
+      });
+
+      if (!tokenResponse.ok) {
+        throw new Error('Failed to get access token');
+      }
+
+      const { access_token } = await tokenResponse.json();
+
+      // Get LinkedIn profile data
+      const { data: profileData, error: profileError } = await supabase.functions.invoke('linkedin-import', {
+        body: { access_token },
+      });
+
+      if (profileError) throw profileError;
+
+      // Update resume content with LinkedIn data
+      setContent(prevContent => ({
+        ...prevContent,
+        personalInfo: {
+          ...prevContent.personalInfo,
+          ...profileData.personalInfo,
+        },
+        workExperience: [
+          ...profileData.workExperience,
+        ],
+      }));
+
+      toast({
+        title: "Success",
+        description: "LinkedIn profile imported successfully",
+      });
+    } catch (error) {
+      console.error('LinkedIn callback error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to import LinkedIn profile",
+        variant: "destructive",
+      });
+    } finally {
+      // Clean up
+      localStorage.removeItem('linkedin_oauth_state');
+      // Remove query parameters from URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  };
+
+  const getLinkedInSecret = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('get-secret', {
+        body: { secretName: 'LINKEDIN_SECRET' },
+      });
+
+      if (error) throw error;
+      return data.LINKEDIN_SECRET;
+    } catch (error) {
+      console.error('Error getting LinkedIn secret:', error);
+      throw error;
+    }
   };
 
   const saveResume = async () => {
