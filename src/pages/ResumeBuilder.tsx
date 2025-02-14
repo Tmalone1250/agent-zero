@@ -130,9 +130,39 @@ const ResumeBuilder = () => {
       // Store state for verification
       localStorage.setItem('linkedin_oauth_state', state);
       
-      // Redirect to LinkedIn OAuth
+      // Open LinkedIn OAuth in a popup window
       const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}&scope=${encodeURIComponent(scope)}`;
-      window.location.href = authUrl;
+      
+      const width = 600;
+      const height = 700;
+      const left = window.screen.width / 2 - width / 2;
+      const top = window.screen.height / 2 - height / 2;
+      
+      const popup = window.open(
+        authUrl,
+        'LinkedIn Login',
+        `width=${width},height=${height},left=${left},top=${top},popup=true`
+      );
+
+      // Poll for popup closure and check for auth code
+      const pollTimer = setInterval(() => {
+        try {
+          if (popup?.closed) {
+            clearInterval(pollTimer);
+            // Check if we have the auth code in storage
+            const authCode = localStorage.getItem('linkedin_auth_code');
+            const authState = localStorage.getItem('linkedin_auth_state');
+            if (authCode && authState === state) {
+              handleLinkedInCallback(authCode);
+              localStorage.removeItem('linkedin_auth_code');
+              localStorage.removeItem('linkedin_auth_state');
+            }
+          }
+        } catch (e) {
+          // Ignore cross-origin frame access errors
+        }
+      }, 500);
+
     } catch (error) {
       console.error('LinkedIn import error:', error);
       toast({
@@ -157,16 +187,7 @@ const ResumeBuilder = () => {
     }
   };
 
-  const handleLinkedInCallback = async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    const state = urlParams.get('state');
-    const storedState = localStorage.getItem('linkedin_oauth_state');
-
-    if (!code || !state || state !== storedState) {
-      return;
-    }
-
+  const handleLinkedInCallback = async (code: string) => {
     try {
       // Exchange code for access token
       const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
@@ -220,10 +241,7 @@ const ResumeBuilder = () => {
         variant: "destructive",
       });
     } finally {
-      // Clean up
       localStorage.removeItem('linkedin_oauth_state');
-      // Remove query parameters from URL
-      window.history.replaceState({}, document.title, window.location.pathname);
     }
   };
 
@@ -356,6 +374,21 @@ const ResumeBuilder = () => {
     },
     // Additional steps will be implemented in the next iteration
   ];
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin === window.location.origin) {
+        const { code, state } = event.data;
+        if (code && state) {
+          localStorage.setItem('linkedin_auth_code', code);
+          localStorage.setItem('linkedin_auth_state', state);
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
   return (
     <div className="min-h-screen bg-black/[0.96] p-8">
