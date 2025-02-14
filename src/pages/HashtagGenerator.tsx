@@ -1,7 +1,6 @@
-
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, Copy, Hash, Trending, History } from "lucide-react";
+import { ArrowLeft, Upload, Copy, Hash, TrendingUp, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -93,7 +92,6 @@ const HashtagGenerator = () => {
         return;
       }
 
-      // Here we'll integrate with Gemini API to generate hashtags
       const response = await fetch("https://api.gemini.ai/v1/generate-hashtags", {
         method: "POST",
         headers: {
@@ -110,7 +108,6 @@ const HashtagGenerator = () => {
 
       const data = await response.json();
 
-      // Save the generation to the database
       await supabase.from("hashtag_generations").insert({
         user_id: user.id,
         input_text: inputText,
@@ -339,7 +336,7 @@ const HashtagGenerator = () => {
                         className="bg-pink-500/20 hover:bg-pink-500/30 text-pink-200 cursor-pointer"
                         onClick={() => copyToClipboard([hashtag])}
                       >
-                        <Trending className="w-3 h-3 mr-1" />
+                        <TrendingUp className="w-3 h-3 mr-1" />
                         {hashtag}
                       </Badge>
                     ))}
