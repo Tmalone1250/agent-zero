@@ -14,6 +14,7 @@ import CustomerServiceBot from "./pages/CustomerServiceBot";
 import DataAnalyzer from "./pages/DataAnalyzer";
 import SeoOptimizer from "./pages/SeoOptimizer";
 import ContentWriter from "./pages/ContentWriter";
+import MarketAnalyst from "./pages/MarketAnalyst";
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/data-analyzer" element={<DataAnalyzer />} />
         <Route path="/seo-optimizer" element={<SeoOptimizer />} />
         <Route path="/content-writer" element={<ContentWriter />} />
+        <Route path="/market-analyst" element={<MarketAnalyst />} />
       </Routes>
     </Router>
   );
