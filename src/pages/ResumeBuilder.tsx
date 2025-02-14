@@ -10,6 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
+
+type Json = Database['public']['Tables']['resumes']['Insert']['content'];
 
 interface Template {
   id: string;
@@ -20,6 +23,7 @@ interface Template {
 }
 
 interface ResumeContent {
+  [key: string]: unknown;
   personalInfo: {
     fullName: string;
     email: string;
@@ -104,7 +108,6 @@ const ResumeBuilder = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // TODO: Implement resume parsing logic
     toast({
       title: "Coming Soon",
       description: "Resume parsing functionality will be available soon",
@@ -112,7 +115,6 @@ const ResumeBuilder = () => {
   };
 
   const handleLinkedInImport = async () => {
-    // TODO: Implement LinkedIn import
     toast({
       title: "Coming Soon",
       description: "LinkedIn import functionality will be available soon",
@@ -132,14 +134,16 @@ const ResumeBuilder = () => {
         return;
       }
 
+      const resumeData = {
+        user_id: user.id,
+        title: content.personalInfo.fullName + "'s Resume",
+        template_name: activeTemplate,
+        content: content as Json,
+      };
+
       const { error } = await supabase
         .from('resumes')
-        .insert({
-          user_id: user.id,
-          title: content.personalInfo.fullName + "'s Resume",
-          template_name: activeTemplate,
-          content: content,
-        });
+        .insert(resumeData);
 
       if (error) {
         throw error;
@@ -342,7 +346,6 @@ const ResumeBuilder = () => {
             </div>
 
             <div className="aspect-[8.5/11] bg-white rounded-lg p-8">
-              {/* Preview content will be implemented in the next iteration */}
               <div className="text-black">
                 <h1 className="text-2xl font-bold">{content.personalInfo.fullName}</h1>
                 <div className="text-sm text-gray-600 mt-2">
