@@ -18,6 +18,7 @@ import MarketAnalyst from "./pages/MarketAnalyst";
 import TestimonialTransformer from "./pages/TestimonialTransformer";
 import GrammarChecker from "./pages/GrammarChecker";
 import PlagiarismChecker from "./pages/PlagiarismChecker";
+import HashtagGenerator from "./pages/HashtagGenerator";
 
 const App = () => {
   return (
@@ -41,6 +42,7 @@ const App = () => {
         <Route path="/testimonial-transformer" element={<TestimonialTransformer />} />
         <Route path="/grammar-checker" element={<GrammarChecker />} />
         <Route path="/plagiarism-checker" element={<PlagiarismChecker />} />
+        <Route path="/hashtag-generator" element={<HashtagGenerator />} />
       </Routes>
     </Router>
   );

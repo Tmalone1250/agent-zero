@@ -36,6 +36,42 @@ export type Database = {
         }
         Relationships: []
       }
+      hashtag_generations: {
+        Row: {
+          created_at: string | null
+          generated_hashtags: Json | null
+          id: string
+          input_text: string | null
+          language: string | null
+          length_preference: string | null
+          num_hashtags: number | null
+          platform: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          generated_hashtags?: Json | null
+          id?: string
+          input_text?: string | null
+          language?: string | null
+          length_preference?: string | null
+          num_hashtags?: number | null
+          platform?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          generated_hashtags?: Json | null
+          id?: string
+          input_text?: string | null
+          language?: string | null
+          length_preference?: string | null
+          num_hashtags?: number | null
+          platform?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       hired_agents: {
         Row: {
           agent_description: string
