@@ -1,12 +1,18 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, FileText, Quote, SpellCheck } from "lucide-react";
+import { Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, FileText, Quote, SpellCheck, FileSearch } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const agents = [
+  {
+    icon: <FileSearch className="w-12 h-12 text-purple-400" />,
+    name: "Plagiarism Checker",
+    description: "Scan text for plagiarism with detailed reports",
+    path: "/plagiarism-checker"
+  },
   {
     icon: <SpellCheck className="w-12 h-12 text-purple-400" />,
     name: "Grammar Checker",
