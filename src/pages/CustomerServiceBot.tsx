@@ -1,26 +1,19 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/hooks/use-toast";
-import { generateCustomerServiceResponse } from "@/services/gemini";
-import { Loader2, Send, Bot, User, ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
 
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft, MessageSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
+import { generateCustomerServiceResponse } from "@/services/gemini";
 
 const CustomerServiceBot = () => {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGenerate = async () => {
     if (!message.trim()) {
       toast({
         title: "Error",
@@ -30,19 +23,19 @@ const CustomerServiceBot = () => {
       return;
     }
 
-    const userMessage = message.trim();
-    setMessage("");
-    setMessages(prev => [...prev, { role: "user", content: userMessage }]);
     setIsLoading(true);
-
     try {
-      const response = await generateCustomerServiceResponse(userMessage);
-      setMessages(prev => [...prev, { role: "assistant", content: response }]);
+      const result = await generateCustomerServiceResponse(message);
+      setResponse(result);
+      toast({
+        title: "Success",
+        description: "Response generated successfully",
+      });
     } catch (error) {
-      console.error("Error getting response:", error);
+      console.error("Error generating response:", error);
       toast({
         title: "Error",
-        description: "Failed to get response. Please try again.",
+        description: "Failed to generate response. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -61,78 +54,49 @@ const CustomerServiceBot = () => {
           Back to Dashboard
         </Link>
 
-        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-8">
-          Customer Service Assistant
-        </h1>
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
+            Customer Service Bot
+          </h1>
+          <p className="text-lg text-neutral-300">
+            Get professional customer service responses.
+          </p>
+        </div>
 
-        <Card className="bg-black/[0.96] border-white/10 mb-4">
-          <ScrollArea className="h-[600px] p-6">
-            {messages.length === 0 ? (
-              <div className="text-center text-neutral-400 mt-20">
-                <Bot className="w-12 h-12 mx-auto mb-4 text-purple-400" />
-                <p>How can I assist you today?</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {messages.map((msg, index) => (
-                  <div
-                    key={index}
-                    className={`flex items-start gap-3 ${
-                      msg.role === "assistant" ? "flex-row" : "flex-row-reverse"
-                    }`}
-                  >
-                    <div
-                      className={`p-3 rounded-lg max-w-[80%] ${
-                        msg.role === "assistant"
-                          ? "bg-purple-500/20 text-white"
-                          : "bg-blue-500/20 text-white ml-auto"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        {msg.role === "assistant" ? (
-                          <Bot className="w-5 h-5 text-purple-400" />
-                        ) : (
-                          <User className="w-5 h-5 text-blue-400" />
-                        )}
-                        <span className="text-sm font-medium">
-                          {msg.role === "assistant" ? "Assistant" : "You"}
-                        </span>
-                      </div>
-                      <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </ScrollArea>
-        </Card>
+        <div className="space-y-6">
+          <div>
+            <Textarea
+              placeholder="Enter customer message..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="h-32 bg-black/50 border-white/10 text-white"
+            />
+          </div>
 
-        <form onSubmit={handleSubmit} className="flex gap-4">
-          <Input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type your message here..."
-            className="flex-1 bg-neutral-900 text-white border-neutral-700"
-            disabled={isLoading}
-          />
           <Button
-            type="submit"
+            onClick={handleGenerate}
             disabled={isLoading}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
           >
             {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Sending...
-              </>
+              "Generating..."
             ) : (
               <>
-                <Send className="mr-2 h-4 w-4" />
-                Send
+                <MessageSquare className="w-4 h-4 mr-2" />
+                Generate Response
               </>
             )}
           </Button>
-        </form>
+
+          {response && (
+            <div className="mt-8">
+              <div className="p-6 rounded-lg bg-black/50 border border-white/10">
+                <h2 className="text-xl font-semibold text-white mb-4">Response</h2>
+                <div className="text-neutral-300 whitespace-pre-wrap">{response}</div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

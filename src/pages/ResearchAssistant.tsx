@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, BookOpen } from "lucide-react";
+import { ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
@@ -12,8 +13,7 @@ const ResearchAssistant = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGenerate = async () => {
     if (!topic.trim()) {
       toast({
         title: "Error",
@@ -25,17 +25,17 @@ const ResearchAssistant = () => {
 
     setIsLoading(true);
     try {
-      const response = await generateResearch(topic);
-      setResearch(response);
+      const result = await generateResearch(topic);
+      setResearch(result);
       toast({
         title: "Success",
-        description: "Research analysis generated successfully",
+        description: "Research generated successfully",
       });
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error generating research:", error);
       toast({
         title: "Error",
-        description: "Failed to generate research analysis",
+        description: "Failed to generate research. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -48,7 +48,7 @@ const ResearchAssistant = () => {
       <div className="max-w-4xl mx-auto">
         <Link
           to="/dashboard"
-          className="inline-flex items-center text-neutral-300 hover:text-white mb-8"
+          className="inline-flex items-center text-neutral-400 hover:text-white mb-8"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Dashboard
@@ -58,45 +58,45 @@ const ResearchAssistant = () => {
           <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
             Research Assistant
           </h1>
-          <p className="text-xl text-neutral-300">
-            Enter your research topic and receive a comprehensive analysis
+          <p className="text-lg text-neutral-300">
+            Get comprehensive research analysis on any topic.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-6">
           <div>
             <Textarea
               placeholder="Enter your research topic..."
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              className="min-h-[120px] bg-black/50 border-white/10 text-white"
+              className="h-32 bg-black/50 border-white/10 text-white"
             />
           </div>
 
           <Button
-            type="submit"
+            onClick={handleGenerate}
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
           >
             {isLoading ? (
-              <span className="flex items-center">
-                <BookOpen className="animate-spin mr-2" />
-                Researching...
-              </span>
+              "Generating..."
             ) : (
-              "Generate Research"
+              <>
+                <Search className="w-4 h-4 mr-2" />
+                Generate Research
+              </>
             )}
           </Button>
-        </form>
 
-        {research && (
-          <div className="mt-8 p-6 rounded-lg bg-black/50 border border-white/10">
-            <h2 className="text-2xl font-semibold text-white mb-4">Research Analysis</h2>
-            <div className="prose prose-invert max-w-none">
-              <pre className="whitespace-pre-wrap text-neutral-300">{research}</pre>
+          {research && (
+            <div className="mt-8">
+              <div className="p-6 rounded-lg bg-black/50 border border-white/10">
+                <h2 className="text-xl font-semibold text-white mb-4">Research Analysis</h2>
+                <div className="text-neutral-300 whitespace-pre-wrap">{research}</div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,32 +1,41 @@
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { generateContent } from "@/services/gemini";
+import { ArrowLeft, PenTool } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { ArrowLeft } from "lucide-react";
+import { generateContent } from "@/services/gemini";
 
 const ContentWriter = () => {
   const [prompt, setPrompt] = useState("");
-  const [response, setResponse] = useState("");
+  const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGenerate = async () => {
+    if (!prompt.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a prompt",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       const result = await generateContent(prompt);
-      setResponse(result);
+      setContent(result);
       toast({
-        title: "Content generated successfully",
-        description: "Check out the response below",
+        title: "Success",
+        description: "Content generated successfully",
       });
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error generating content:", error);
       toast({
-        title: "Error generating content",
-        description: "Please try again later",
+        title: "Error",
+        description: "Failed to generate content. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -36,7 +45,7 @@ const ContentWriter = () => {
 
   return (
     <div className="min-h-screen bg-black/[0.96] p-8">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <Link
           to="/dashboard"
           className="inline-flex items-center text-neutral-400 hover:text-white mb-8"
@@ -45,43 +54,49 @@ const ContentWriter = () => {
           Back to Dashboard
         </Link>
 
-        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
-          Content Writer
-        </h1>
-        <p className="text-xl text-neutral-300 mb-8">
-          Professional content generation assistant
-        </p>
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
+            Content Writer
+          </h1>
+          <p className="text-lg text-neutral-300">
+            Generate high-quality content for any purpose.
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-6">
           <div>
-            <label htmlFor="prompt" className="block text-lg text-white mb-2">
-              What would you like help with?
-            </label>
             <Textarea
-              id="prompt"
-              placeholder="Describe what content you'd like to generate..."
-              className="min-h-[200px] bg-neutral-900 text-white border-neutral-700"
+              placeholder="Describe the content you want to generate..."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
+              className="h-32 bg-black/50 border-white/10 text-white"
             />
           </div>
-          <Button 
-            type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-6 text-lg"
-            disabled={isLoading}
-          >
-            {isLoading ? "Generating..." : "Submit Request"}
-          </Button>
-        </form>
 
-        {response && (
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold text-white mb-4">Generated Content:</h2>
-            <div className="bg-neutral-900 p-6 rounded-lg border border-neutral-700">
-              <pre className="text-white whitespace-pre-wrap">{response}</pre>
+          <Button
+            onClick={handleGenerate}
+            disabled={isLoading}
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+          >
+            {isLoading ? (
+              "Generating..."
+            ) : (
+              <>
+                <PenTool className="w-4 h-4 mr-2" />
+                Generate Content
+              </>
+            )}
+          </Button>
+
+          {content && (
+            <div className="mt-8">
+              <div className="p-6 rounded-lg bg-black/50 border border-white/10">
+                <h2 className="text-xl font-semibold text-white mb-4">Generated Content</h2>
+                <div className="text-neutral-300 whitespace-pre-wrap">{content}</div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
