@@ -186,6 +186,75 @@ export type Database = {
         }
         Relationships: []
       }
+      resume_templates: {
+        Row: {
+          created_at: string | null
+          display_name: string
+          id: string
+          industry: string | null
+          name: string
+          preview_image_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          display_name: string
+          id?: string
+          industry?: string | null
+          name: string
+          preview_image_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          display_name?: string
+          id?: string
+          industry?: string | null
+          name?: string
+          preview_image_url?: string | null
+        }
+        Relationships: []
+      }
+      resumes: {
+        Row: {
+          content: Json
+          created_at: string | null
+          id: string
+          is_public: boolean | null
+          language: string | null
+          share_token: string | null
+          style_preferences: Json | null
+          template_name: string
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          language?: string | null
+          share_token?: string | null
+          style_preferences?: Json | null
+          template_name: string
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          language?: string | null
+          share_token?: string | null
+          style_preferences?: Json | null
+          template_name?: string
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       saved_jobs: {
         Row: {
           company_name: string

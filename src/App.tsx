@@ -19,6 +19,7 @@ import TestimonialTransformer from "./pages/TestimonialTransformer";
 import GrammarChecker from "./pages/GrammarChecker";
 import PlagiarismChecker from "./pages/PlagiarismChecker";
 import HashtagGenerator from "./pages/HashtagGenerator";
+import ResumeBuilder from "./pages/ResumeBuilder";
 
 const App = () => {
   return (
@@ -43,6 +44,7 @@ const App = () => {
         <Route path="/grammar-checker" element={<GrammarChecker />} />
         <Route path="/plagiarism-checker" element={<PlagiarismChecker />} />
         <Route path="/hashtag-generator" element={<HashtagGenerator />} />
+        <Route path="/resume-builder" element={<ResumeBuilder />} />
       </Routes>
     </Router>
   );
