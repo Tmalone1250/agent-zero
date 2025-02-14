@@ -16,6 +16,7 @@ import SeoOptimizer from "./pages/SeoOptimizer";
 import ContentWriter from "./pages/ContentWriter";
 import MarketAnalyst from "./pages/MarketAnalyst";
 import TestimonialTransformer from "./pages/TestimonialTransformer";
+import GrammarChecker from "./pages/GrammarChecker";
 
 const App = () => {
   return (
@@ -37,6 +38,7 @@ const App = () => {
         <Route path="/content-writer" element={<ContentWriter />} />
         <Route path="/market-analyst" element={<MarketAnalyst />} />
         <Route path="/testimonial-transformer" element={<TestimonialTransformer />} />
+        <Route path="/grammar-checker" element={<GrammarChecker />} />
       </Routes>
     </Router>
   );

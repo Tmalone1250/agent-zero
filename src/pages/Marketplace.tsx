@@ -1,12 +1,18 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, FileText, Quote } from "lucide-react";
+import { Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, FileText, Quote, SpellCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const agents = [
+  {
+    icon: <SpellCheck className="w-12 h-12 text-purple-400" />,
+    name: "Grammar Checker",
+    description: "Check and correct grammar, spelling, and punctuation",
+    path: "/grammar-checker"
+  },
   {
     icon: <Quote className="w-12 h-12 text-purple-400" />,
     name: "Testimonial Transformer",
