@@ -121,10 +121,9 @@ const ResumeBuilder = () => {
 
   const handleLinkedInImport = async () => {
     try {
-      // LinkedIn OAuth configuration
       const clientId = await getLinkedInClientId();
       const redirectUri = window.location.origin + '/resume-builder';
-      const scope = 'r_liteprofile r_emailaddress r_basicprofile';
+      const scope = 'r_liteprofile r_emailaddress w_member_social';
       const state = Math.random().toString(36).substring(7);
       
       // Store state for verification
@@ -189,7 +188,6 @@ const ResumeBuilder = () => {
 
   const handleLinkedInCallback = async (code: string) => {
     try {
-      // Exchange code for access token
       const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
         method: 'POST',
         headers: {
@@ -210,14 +208,12 @@ const ResumeBuilder = () => {
 
       const { access_token } = await tokenResponse.json();
 
-      // Get LinkedIn profile data
       const { data: profileData, error: profileError } = await supabase.functions.invoke('linkedin-import', {
         body: { access_token },
       });
 
       if (profileError) throw profileError;
 
-      // Update resume content with LinkedIn data
       setContent(prevContent => ({
         ...prevContent,
         personalInfo: {
