@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Upload, Download, Copy, Share2, Printer, LinkedinIcon } from "lucide-react";
@@ -88,7 +89,7 @@ const ResumeBuilder = () => {
     // Check for LinkedIn OAuth callback
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('code')) {
-      handleLinkedInCallback();
+      handleLinkedInCallback(urlParams.get('code') || '');
     }
   }, []);
 
