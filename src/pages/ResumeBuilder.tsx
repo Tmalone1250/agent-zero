@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Upload, Download, Copy, Share2, Printer, LinkedinIcon } from "lucide-react";
@@ -23,13 +22,13 @@ interface Template {
 }
 
 interface ResumeContent {
-  [key: string]: unknown;
   personalInfo: {
     fullName: string;
     email: string;
     phone: string;
     location: string;
     linkedIn?: string;
+    profilePicture?: string | null;
   };
   workExperience: Array<{
     title: string;
@@ -45,10 +44,17 @@ interface ResumeContent {
     institution: string;
     location: string;
     graduationDate: string;
-    description?: string;
+    startDate?: string;
+    fieldOfStudy?: string;
   }>;
   skills: string[];
   languages: string[];
+  projects: Array<{
+    title: string;
+    description: string;
+    startDate?: string;
+    endDate?: string;
+  }>;
 }
 
 const ResumeBuilder = () => {
@@ -61,6 +67,7 @@ const ResumeBuilder = () => {
       phone: "",
       location: "",
       linkedIn: "",
+      profilePicture: null,
     },
     workExperience: [{
       title: "",
@@ -79,6 +86,7 @@ const ResumeBuilder = () => {
     }],
     skills: [],
     languages: [],
+    projects: [],
   });
   const [currentStep, setCurrentStep] = useState(0);
   const { toast } = useToast();
@@ -221,9 +229,9 @@ const ResumeBuilder = () => {
           ...prevContent.personalInfo,
           ...profileData.personalInfo,
         },
-        workExperience: [
-          ...profileData.workExperience,
-        ],
+        workExperience: profileData.workExperience,
+        education: profileData.education,
+        skills: profileData.skills,
       }));
 
       toast({
@@ -369,7 +377,160 @@ const ResumeBuilder = () => {
         </div>
       ),
     },
-    // Additional steps will be implemented in the next iteration
+    {
+      title: "Experience",
+      component: (
+        <div className="space-y-6">
+          {content.workExperience.map((exp, index) => (
+            <div key={index} className="space-y-4 p-4 border border-white/10 rounded-lg">
+              <Input
+                placeholder="Job Title"
+                value={exp.title}
+                onChange={(e) => {
+                  const newExp = [...content.workExperience];
+                  newExp[index] = { ...exp, title: e.target.value };
+                  setContent({ ...content, workExperience: newExp });
+                }}
+              />
+              <Input
+                placeholder="Company"
+                value={exp.company}
+                onChange={(e) => {
+                  const newExp = [...content.workExperience];
+                  newExp[index] = { ...exp, company: e.target.value };
+                  setContent({ ...content, workExperience: newExp });
+                }}
+              />
+              <div className="grid grid-cols-2 gap-4">
+                <Input
+                  type="month"
+                  placeholder="Start Date"
+                  value={exp.startDate}
+                  onChange={(e) => {
+                    const newExp = [...content.workExperience];
+                    newExp[index] = { ...exp, startDate: e.target.value };
+                    setContent({ ...content, workExperience: newExp });
+                  }}
+                />
+                <Input
+                  type="month"
+                  placeholder="End Date"
+                  value={exp.endDate === 'Present' ? '' : exp.endDate}
+                  onChange={(e) => {
+                    const newExp = [...content.workExperience];
+                    newExp[index] = { ...exp, endDate: e.target.value || 'Present' };
+                    setContent({ ...content, workExperience: newExp });
+                  }}
+                />
+              </div>
+              <Textarea
+                placeholder="Description"
+                value={exp.description}
+                onChange={(e) => {
+                  const newExp = [...content.workExperience];
+                  newExp[index] = { ...exp, description: e.target.value };
+                  setContent({ ...content, workExperience: newExp });
+                }}
+              />
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            onClick={() => setContent({
+              ...content,
+              workExperience: [...content.workExperience, {
+                title: "",
+                company: "",
+                location: "",
+                startDate: "",
+                endDate: "",
+                description: "",
+                achievements: [],
+              }]
+            })}
+          >
+            Add Experience
+          </Button>
+        </div>
+      ),
+    },
+    {
+      title: "Education",
+      component: (
+        <div className="space-y-6">
+          {content.education.map((edu, index) => (
+            <div key={index} className="space-y-4 p-4 border border-white/10 rounded-lg">
+              <Input
+                placeholder="Degree"
+                value={edu.degree}
+                onChange={(e) => {
+                  const newEdu = [...content.education];
+                  newEdu[index] = { ...edu, degree: e.target.value };
+                  setContent({ ...content, education: newEdu });
+                }}
+              />
+              <Input
+                placeholder="Institution"
+                value={edu.institution}
+                onChange={(e) => {
+                  const newEdu = [...content.education];
+                  newEdu[index] = { ...edu, institution: e.target.value };
+                  setContent({ ...content, education: newEdu });
+                }}
+              />
+              <Input
+                placeholder="Field of Study"
+                value={edu.fieldOfStudy}
+                onChange={(e) => {
+                  const newEdu = [...content.education];
+                  newEdu[index] = { ...edu, fieldOfStudy: e.target.value };
+                  setContent({ ...content, education: newEdu });
+                }}
+              />
+              <Input
+                type="month"
+                placeholder="Graduation Date"
+                value={edu.graduationDate}
+                onChange={(e) => {
+                  const newEdu = [...content.education];
+                  newEdu[index] = { ...edu, graduationDate: e.target.value };
+                  setContent({ ...content, education: newEdu });
+                }}
+              />
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            onClick={() => setContent({
+              ...content,
+              education: [...content.education, {
+                degree: "",
+                institution: "",
+                location: "",
+                graduationDate: "",
+              }]
+            })}
+          >
+            Add Education
+          </Button>
+        </div>
+      ),
+    },
+    {
+      title: "Skills",
+      component: (
+        <div className="space-y-4">
+          <Textarea
+            placeholder="Enter skills (one per line)"
+            value={content.skills.join('\n')}
+            onChange={(e) => setContent({
+              ...content,
+              skills: e.target.value.split('\n').filter(skill => skill.trim() !== '')
+            })}
+          />
+        </div>
+      ),
+    },
   ];
 
   useEffect(() => {
@@ -498,10 +659,10 @@ const ResumeBuilder = () => {
               </div>
             </div>
 
-            <div className="aspect-[8.5/11] bg-white rounded-lg p-8">
+            <div className="aspect-[8.5/11] bg-white rounded-lg p-8 overflow-y-auto">
               <div className="text-black">
                 <h1 className="text-2xl font-bold">{content.personalInfo.fullName}</h1>
-                <div className="text-sm text-gray-600 mt-2">
+                <div className="text-sm text-gray-600 mt-2 space-y-1">
                   {content.personalInfo.email && (
                     <p>{content.personalInfo.email}</p>
                   )}
@@ -511,7 +672,80 @@ const ResumeBuilder = () => {
                   {content.personalInfo.location && (
                     <p>{content.personalInfo.location}</p>
                   )}
+                  {content.personalInfo.linkedIn && (
+                    <p>{content.personalInfo.linkedIn}</p>
+                  )}
                 </div>
+
+                {content.workExperience.length > 0 && (
+                  <div className="mt-6">
+                    <h2 className="text-lg font-semibold border-b border-gray-300 pb-1 mb-3">
+                      Work Experience
+                    </h2>
+                    <div className="space-y-4">
+                      {content.workExperience.map((exp, index) => (
+                        <div key={index}>
+                          <div className="flex justify-between">
+                            <div>
+                              <h3 className="font-medium">{exp.title}</h3>
+                              <p className="text-gray-600">{exp.company}</p>
+                            </div>
+                            <p className="text-sm text-gray-500">
+                              {exp.startDate} - {exp.endDate}
+                            </p>
+                          </div>
+                          {exp.description && (
+                            <p className="text-sm mt-1">{exp.description}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {content.education.length > 0 && (
+                  <div className="mt-6">
+                    <h2 className="text-lg font-semibold border-b border-gray-300 pb-1 mb-3">
+                      Education
+                    </h2>
+                    <div className="space-y-4">
+                      {content.education.map((edu, index) => (
+                        <div key={index}>
+                          <div className="flex justify-between">
+                            <div>
+                              <h3 className="font-medium">{edu.degree}</h3>
+                              <p className="text-gray-600">{edu.institution}</p>
+                              {edu.fieldOfStudy && (
+                                <p className="text-sm text-gray-500">{edu.fieldOfStudy}</p>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-500">
+                              {edu.startDate && `${edu.startDate} - `}{edu.graduationDate}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {content.skills.length > 0 && (
+                  <div className="mt-6">
+                    <h2 className="text-lg font-semibold border-b border-gray-300 pb-1 mb-3">
+                      Skills
+                    </h2>
+                    <div className="flex flex-wrap gap-2">
+                      {content.skills.map((skill, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-gray-100 rounded text-sm"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </Card>
