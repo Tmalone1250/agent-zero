@@ -21,6 +21,7 @@ import GrammarChecker from "./pages/GrammarChecker";
 import PlagiarismChecker from "./pages/PlagiarismChecker";
 import HashtagGenerator from "./pages/HashtagGenerator";
 import ResumeBuilder from "./pages/ResumeBuilder";
+import PersonalStylist from "./pages/PersonalStylist";
 
 const App = () => {
   return (
@@ -47,6 +48,7 @@ const App = () => {
         <Route path="/hashtag-generator" element={<HashtagGenerator />} />
         <Route path="/resume-builder" element={<ResumeBuilder />} />
         <Route path="/career-coach" element={<CareerCoach />} />
+        <Route path="/personal-stylist" element={<PersonalStylist />} />
       </Routes>
     </Router>
   );

@@ -1,17 +1,16 @@
-
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, Quote, SpellCheck, FileSearch, Hash, ScrollText, Briefcase } from "lucide-react";
+import { FileText, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, Quote, SpellCheck, FileSearch, Hash, ScrollText, Briefcase, Shirt } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const agents = [
   {
-    icon: <Briefcase className="w-12 h-12 text-purple-400" />,
-    name: "Career Coach",
-    description: "AI-powered career guidance and interview prep",
-    path: "/career-coach"
+    icon: <Shirt className="w-12 h-12 text-purple-400" />,
+    name: "Personal Stylist",
+    description: "AI-powered fashion advice and outfit recommendations",
+    path: "/personal-stylist"
   },
   {
     icon: <ScrollText className="w-12 h-12 text-purple-400" />,
