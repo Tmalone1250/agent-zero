@@ -271,7 +271,7 @@ const ResumeBuilder = () => {
 
       const resumeData = {
         user_id: user.id,
-        title: content.personalInfo.fullName + "'s Resume",
+        title: content.personalInfo.fullName ? `${content.personalInfo.fullName}'s Resume` : "My Resume",
         template_name: activeTemplate,
         content: content as Json,
       };
@@ -480,6 +480,9 @@ const ResumeBuilder = () => {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold text-white">Preview</h2>
               <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={saveResume}>
+                  Save Resume
+                </Button>
                 <Button variant="outline" size="sm">
                   <Download className="w-4 h-4 mr-2" />
                   Download
