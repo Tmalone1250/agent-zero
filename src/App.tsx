@@ -1,6 +1,7 @@
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Marketplace from "./pages/Marketplace";
+import CareerCoach from "./pages/CareerCoach";
 import MyAgents from "./pages/MyAgents";
 import AcademicAssistant from "./pages/AcademicAssistant";
 import Dashboard from "./pages/Dashboard";
@@ -45,6 +46,7 @@ const App = () => {
         <Route path="/plagiarism-checker" element={<PlagiarismChecker />} />
         <Route path="/hashtag-generator" element={<HashtagGenerator />} />
         <Route path="/resume-builder" element={<ResumeBuilder />} />
+        <Route path="/career-coach" element={<CareerCoach />} />
       </Routes>
     </Router>
   );
