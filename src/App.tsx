@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Marketplace from "./pages/Marketplace";
 import CareerCoach from "./pages/CareerCoach";
@@ -22,6 +21,7 @@ import PlagiarismChecker from "./pages/PlagiarismChecker";
 import HashtagGenerator from "./pages/HashtagGenerator";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import PersonalStylist from "./pages/PersonalStylist";
+import CompanyResearch from "./pages/CompanyResearch";
 
 const App = () => {
   return (
@@ -49,6 +49,7 @@ const App = () => {
         <Route path="/resume-builder" element={<ResumeBuilder />} />
         <Route path="/career-coach" element={<CareerCoach />} />
         <Route path="/personal-stylist" element={<PersonalStylist />} />
+        <Route path="/company-research" element={<CompanyResearch />} />
       </Routes>
     </Router>
   );

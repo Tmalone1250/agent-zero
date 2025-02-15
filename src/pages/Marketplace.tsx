@@ -1,11 +1,18 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, Quote, SpellCheck, FileSearch, Hash, ScrollText, Briefcase, Shirt } from "lucide-react";
+import { FileText, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, Quote, SpellCheck, FileSearch, Hash, ScrollText, Briefcase, Shirt, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const agents = [
+  {
+    icon: <Building2 className="w-12 h-12 text-purple-400" />,
+    name: "Company Research",
+    description: "Comprehensive company and market analysis",
+    path: "/company-research"
+  },
   {
     icon: <Shirt className="w-12 h-12 text-purple-400" />,
     name: "Personal Stylist",
