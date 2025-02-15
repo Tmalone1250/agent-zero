@@ -11,7 +11,3 @@ enabled = true
 enabled = true
 [functions]
 enabled = true
-[functions.fetch-esports-matches]
-verify_jwt = false
-[functions.generate-esports-prediction]
-verify_jwt = false

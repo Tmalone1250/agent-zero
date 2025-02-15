@@ -1,17 +1,12 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, Quote, SpellCheck, FileSearch, Hash, ScrollText, Briefcase, Shirt, Building2, GamepadIcon } from "lucide-react";
+import { FileText, Code, Image, MessageSquare, Database, Network, Bot, Activity, Globe, Target, ArrowLeft, GraduationCap, Quote, SpellCheck, FileSearch, Hash, ScrollText, Briefcase, Shirt, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const agents = [
-  {
-    icon: <GamepadIcon className="w-12 h-12 text-purple-400" />,
-    name: "Esports Betting Advisor",
-    description: "AI-powered esports match predictions and betting insights",
-    path: "/esports-betting"
-  },
   {
     icon: <Building2 className="w-12 h-12 text-purple-400" />,
     name: "Company Research",
@@ -55,7 +50,7 @@ const agents = [
     path: "/testimonial-transformer"
   },
   {
-    icon: <FileText className="w-12 h-12 text-purple-400" />,
+    icon: <FileText className="w-12 h-12 text-primary" />,
     name: "Document Formatter",
     description: "Professional document formatting and styling",
     path: "/document-formatter"
