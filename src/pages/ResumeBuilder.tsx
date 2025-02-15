@@ -281,7 +281,7 @@ const ResumeBuilder = () => {
         user_id: user.id,
         title: content.personalInfo.fullName ? `${content.personalInfo.fullName}'s Resume` : "My Resume",
         template_name: activeTemplate,
-        content: content as Json,
+        content: content as unknown as Json,
       };
 
       const { error } = await supabase
