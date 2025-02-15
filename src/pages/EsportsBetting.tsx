@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -179,6 +178,41 @@ const EsportsBetting = () => {
     return `${Math.round((odds1 / total) * 100)}%`;
   };
 
+  const generatePrediction = async (matchId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to generate predictions",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('generate-esports-prediction', {
+        body: { matchId, userId: user.id }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Prediction Generated",
+        description: `Predicted winner: ${data.winner} (${data.confidence}% confidence)`,
+      });
+
+      // Refresh predictions
+      fetchPredictions();
+    } catch (error) {
+      console.error('Error generating prediction:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate prediction. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const renderMatchCard = (match: Match) => (
     <Card key={match.id} className="p-6 bg-black/[0.96] border-white/10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -211,6 +245,14 @@ const EsportsBetting = () => {
               {match.score_team1} - {match.score_team2}
             </div>
           )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => generatePrediction(match.match_id)}
+            className="mt-2"
+          >
+            Generate Prediction
+          </Button>
         </div>
       </div>
     </Card>
