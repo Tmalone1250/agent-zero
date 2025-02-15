@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -30,10 +31,16 @@ const EsportsBetting = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchUserPreferences();
-    fetchMatches();
-    fetchPredictions();
-    setupRealtime();
+    const fetchData = async () => {
+      await Promise.all([
+        fetchUserPreferences(),
+        fetchMatches(),
+        fetchPredictions()
+      ]);
+      setupRealtime();
+    };
+
+    fetchData();
 
     return () => {
       supabase.removeAllChannels();
@@ -106,7 +113,6 @@ const EsportsBetting = () => {
 
   const fetchMatches = async () => {
     try {
-      // Fetch live matches
       const { data: liveData, error: liveError } = await supabase
         .from('esports_matches')
         .select('*')
@@ -116,7 +122,6 @@ const EsportsBetting = () => {
       if (liveError) throw liveError;
       setMatches(liveData || []);
 
-      // Fetch upcoming matches
       const { data: upcomingData, error: upcomingError } = await supabase
         .from('esports_matches')
         .select('*')
@@ -126,7 +131,6 @@ const EsportsBetting = () => {
       if (upcomingError) throw upcomingError;
       setUpcomingMatches(upcomingData || []);
 
-      // Trigger match data refresh
       await supabase.functions.invoke('fetch-esports-matches');
     } catch (error) {
       console.error('Error fetching matches:', error);
@@ -147,7 +151,7 @@ const EsportsBetting = () => {
 
       const { data, error } = await supabase
         .from('esports_predictions')
-        .select('*, esports_matches(*)')
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
@@ -163,8 +167,7 @@ const EsportsBetting = () => {
     if (value === 'all') {
       fetchMatches();
     } else {
-      const filteredMatches = matches.filter(match => match.game_type === value);
-      setMatches(filteredMatches);
+      setMatches(prev => prev.filter(match => match.game_type === value));
     }
   };
 
@@ -201,8 +204,7 @@ const EsportsBetting = () => {
         description: `Predicted winner: ${data.winner} (${data.confidence}% confidence)`,
       });
 
-      // Refresh predictions
-      fetchPredictions();
+      await fetchPredictions();
     } catch (error) {
       console.error('Error generating prediction:', error);
       toast({
