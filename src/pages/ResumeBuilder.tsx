@@ -123,7 +123,7 @@ const ResumeBuilder = () => {
     try {
       const clientId = await getLinkedInClientId();
       const redirectUri = window.location.origin + '/resume-builder';
-      const scope = 'r_liteprofile r_emailaddress w_member_social';
+      const scope = 'openid profile email w_member_social';  // Updated to use available scopes
       const state = Math.random().toString(36).substring(7);
       
       // Store state for verification
