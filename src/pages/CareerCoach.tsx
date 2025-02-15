@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Upload, Send } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -182,7 +183,9 @@ const CareerCoach = () => {
           <Card className="p-6 bg-black/50 border-white/10">
             <h2 className="text-xl font-semibold text-white mb-4">Response</h2>
             <div className="prose prose-invert max-w-none">
-              <div className="whitespace-pre-wrap text-neutral-200">{response}</div>
+              <ReactMarkdown className="text-neutral-200">
+                {response}
+              </ReactMarkdown>
             </div>
           </Card>
         )}
