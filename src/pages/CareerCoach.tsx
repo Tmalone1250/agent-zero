@@ -182,7 +182,7 @@ const CareerCoach = () => {
           <Card className="p-6 bg-black/50 border-white/10">
             <h2 className="text-xl font-semibold text-white mb-4">Response</h2>
             <div className="prose prose-invert max-w-none">
-              <div className="whitespace-pre-wrap">{response}</div>
+              <div className="whitespace-pre-wrap text-neutral-200">{response}</div>
             </div>
           </Card>
         )}
