@@ -14,35 +14,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GamepadIcon, Trophy, Users, Timer, Target, ArrowLeft, Bell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import type { Database } from "@/integrations/supabase/types";
 
-interface Match {
-  id: string;
-  game_type: string;
-  tournament: string;
-  team1: string;
-  team2: string;
-  start_time: string;
-  status: string;
-  score_team1: number | null;
-  score_team2: number | null;
-  odds_team1: number | null;
-  odds_team2: number | null;
-}
-
-interface UserPreferences {
-  favorite_games: string[];
-  favorite_teams: string[];
-  risk_level: string;
-  notification_preferences: {
-    match_start: boolean;
-    predictions: boolean;
-  };
-}
+type Match = Database['public']['Tables']['esports_matches']['Row'];
+type UserPreferences = Database['public']['Tables']['esports_user_preferences']['Row'];
+type Prediction = Database['public']['Tables']['esports_predictions']['Row'];
 
 const EsportsBetting = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [matches, setMatches] = useState<Match[]>([]);
+  const [upcomingMatches, setUpcomingMatches] = useState<Match[]>([]);
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [selectedGame, setSelectedGame] = useState<string>("all");
   const [preferences, setPreferences] = useState<UserPreferences | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,7 +33,45 @@ const EsportsBetting = () => {
   useEffect(() => {
     fetchUserPreferences();
     fetchMatches();
+    fetchPredictions();
+    setupRealtime();
+
+    return () => {
+      supabase.removeAllChannels();
+    };
   }, []);
+
+  const setupRealtime = () => {
+    const channel = supabase
+      .channel('esports-updates')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'esports_matches' },
+        (payload) => {
+          console.log('Received real-time update:', payload);
+          if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
+            updateMatchesState(payload.new as Match);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  };
+
+  const updateMatchesState = (updatedMatch: Match) => {
+    setMatches(current => {
+      const index = current.findIndex(m => m.id === updatedMatch.id);
+      if (index === -1) {
+        return [...current, updatedMatch];
+      }
+      const newMatches = [...current];
+      newMatches[index] = updatedMatch;
+      return newMatches;
+    });
+  };
 
   const fetchUserPreferences = async () => {
     try {
@@ -76,7 +97,9 @@ const EsportsBetting = () => {
         return;
       }
 
-      setPreferences(data);
+      if (data) {
+        setPreferences(data);
+      }
     } catch (error) {
       console.error('Error:', error);
     }
@@ -84,17 +107,28 @@ const EsportsBetting = () => {
 
   const fetchMatches = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch live matches
+      const { data: liveData, error: liveError } = await supabase
         .from('esports_matches')
         .select('*')
-        .order('start_time', { ascending: true })
-        .limit(10);
+        .eq('status', 'running')
+        .order('start_time', { ascending: true });
 
-      if (error) {
-        throw error;
-      }
+      if (liveError) throw liveError;
+      setMatches(liveData || []);
 
-      setMatches(data || []);
+      // Fetch upcoming matches
+      const { data: upcomingData, error: upcomingError } = await supabase
+        .from('esports_matches')
+        .select('*')
+        .eq('status', 'upcoming')
+        .order('start_time', { ascending: true });
+
+      if (upcomingError) throw upcomingError;
+      setUpcomingMatches(upcomingData || []);
+
+      // Trigger match data refresh
+      await supabase.functions.invoke('fetch-esports-matches');
     } catch (error) {
       console.error('Error fetching matches:', error);
       toast({
@@ -107,9 +141,32 @@ const EsportsBetting = () => {
     }
   };
 
+  const fetchPredictions = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('esports_predictions')
+        .select('*, esports_matches(*)')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setPredictions(data || []);
+    } catch (error) {
+      console.error('Error fetching predictions:', error);
+    }
+  };
+
   const handleGameChange = (value: string) => {
     setSelectedGame(value);
-    // You would typically fetch new matches here based on the selected game
+    if (value === 'all') {
+      fetchMatches();
+    } else {
+      const filteredMatches = matches.filter(match => match.game_type === value);
+      setMatches(filteredMatches);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -121,6 +178,43 @@ const EsportsBetting = () => {
     const total = odds1 + odds2;
     return `${Math.round((odds1 / total) * 100)}%`;
   };
+
+  const renderMatchCard = (match: Match) => (
+    <Card key={match.id} className="p-6 bg-black/[0.96] border-white/10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-2">
+            <Trophy className="h-4 w-4 text-purple-400" />
+            <span className="text-sm text-neutral-400">{match.tournament}</span>
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <div className="text-lg font-semibold text-white">{match.team1}</div>
+            <div className="text-neutral-400">vs</div>
+            <div className="text-lg font-semibold text-white">{match.team2}</div>
+          </div>
+        </div>
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex items-center gap-2">
+            <Timer className="h-4 w-4 text-neutral-400" />
+            <span className="text-sm text-neutral-400">
+              {formatDate(match.start_time)}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Target className="h-4 w-4 text-green-400" />
+            <span className="text-sm text-green-400">
+              Win probability: {calculateWinProbability(match.odds_team1, match.odds_team2)}
+            </span>
+          </div>
+          {match.status === 'running' && (
+            <div className="text-sm text-purple-400">
+              {match.score_team1} - {match.score_team2}
+            </div>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
 
   return (
     <div className="min-h-screen bg-black/[0.96] p-8 pt-24">
@@ -193,51 +287,45 @@ const EsportsBetting = () => {
                       <p className="text-neutral-400">No live matches available</p>
                     </Card>
                   ) : (
-                    matches.map((match) => (
-                      <Card key={match.id} className="p-6 bg-black/[0.96] border-white/10">
-                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Trophy className="h-4 w-4 text-purple-400" />
-                              <span className="text-sm text-neutral-400">{match.tournament}</span>
-                            </div>
-                            <div className="flex items-center justify-between gap-4">
-                              <div className="text-lg font-semibold text-white">{match.team1}</div>
-                              <div className="text-neutral-400">vs</div>
-                              <div className="text-lg font-semibold text-white">{match.team2}</div>
-                            </div>
-                          </div>
-                          <div className="flex flex-col items-end gap-2">
-                            <div className="flex items-center gap-2">
-                              <Timer className="h-4 w-4 text-neutral-400" />
-                              <span className="text-sm text-neutral-400">
-                                {formatDate(match.start_time)}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Target className="h-4 w-4 text-green-400" />
-                              <span className="text-sm text-green-400">
-                                Win probability: {calculateWinProbability(match.odds_team1, match.odds_team2)}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </Card>
-                    ))
+                    matches.map(renderMatchCard)
                   )}
                 </div>
               </TabsContent>
 
               <TabsContent value="upcoming" className="mt-4">
-                <Card className="p-6 bg-black/[0.96] border-white/10">
-                  <p className="text-neutral-400">Coming soon: Upcoming matches</p>
-                </Card>
+                <div className="space-y-4">
+                  {upcomingMatches.length === 0 ? (
+                    <Card className="p-6 bg-black/[0.96] border-white/10">
+                      <p className="text-neutral-400">No upcoming matches available</p>
+                    </Card>
+                  ) : (
+                    upcomingMatches.map(renderMatchCard)
+                  )}
+                </div>
               </TabsContent>
 
               <TabsContent value="predictions" className="mt-4">
-                <Card className="p-6 bg-black/[0.96] border-white/10">
-                  <p className="text-neutral-400">Coming soon: Your predictions</p>
-                </Card>
+                <div className="space-y-4">
+                  {predictions.length === 0 ? (
+                    <Card className="p-6 bg-black/[0.96] border-white/10">
+                      <p className="text-neutral-400">No predictions yet</p>
+                    </Card>
+                  ) : (
+                    predictions.map((prediction) => (
+                      <Card key={prediction.id} className="p-6 bg-black/[0.96] border-white/10">
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-purple-400">Prediction: {prediction.prediction}</span>
+                            <span className="text-green-400">Confidence: {prediction.confidence_score}%</span>
+                          </div>
+                          {prediction.reasoning && (
+                            <p className="text-neutral-400 text-sm mt-2">{prediction.reasoning}</p>
+                          )}
+                        </div>
+                      </Card>
+                    ))
+                  )}
+                </div>
               </TabsContent>
             </Tabs>
           </div>

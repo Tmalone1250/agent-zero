@@ -1,1 +1,15 @@
+
+# project configuration
 project_id = "fwkgnukqwpamjaurigmk"
+[api]
+enabled = true
+[api.schema]
+enabled = true
+[db]
+enabled = true
+[db.migrations]
+enabled = true
+[functions]
+enabled = true
+[functions.fetch-esports-matches]
+verify_jwt = false
