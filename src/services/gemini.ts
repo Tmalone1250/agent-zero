@@ -35,35 +35,32 @@ export const generateSeoOptimization = async (content: string) => {
     console.log("Successfully retrieved API key");
     
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro", generationConfig: {
-      temperature: 0.7,
-      topP: 0.8,
-      topK: 40,
-    }});
-
-    const result = await model.generateContent({
-      contents: [{
-        role: "user",
-        parts: [{
-          text: `As an SEO expert, please analyze the following URL or content and provide a detailed report:
-
-          ${content}
-          
-          Please include:
-          1. Overall SEO grade (A+, A, B, etc.)
-          2. Detailed analysis of:
-             - Meta tags and descriptions
-             - Keyword optimization
-             - Content quality
-             - Technical SEO factors
-             - Loading speed considerations
-             - Mobile responsiveness
-          3. Specific recommendations for improvement
-          4. Priority levels for each recommendation`
-        }]
-      }]
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.0-pro",
+      generationConfig: {
+        temperature: 0.7,
+        topP: 0.8,
+        topK: 40,
+      }
     });
 
+    const prompt = `As an SEO expert, please analyze the following URL or content and provide a detailed report:
+
+    ${content}
+    
+    Please include:
+    1. Overall SEO grade (A+, A, B, etc.)
+    2. Detailed analysis of:
+       - Meta tags and descriptions
+       - Keyword optimization
+       - Content quality
+       - Technical SEO factors
+       - Loading speed considerations
+       - Mobile responsiveness
+    3. Specific recommendations for improvement
+    4. Priority levels for each recommendation`;
+
+    const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
     console.log("Received SEO optimization response:", text);
