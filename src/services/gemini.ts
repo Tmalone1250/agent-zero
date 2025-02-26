@@ -28,6 +28,52 @@ const getGeminiApiKey = async () => {
   }
 };
 
+export const generateSeoOptimization = async (content: string) => {
+  try {
+    console.log("Generating SEO optimization for content:", content);
+    const apiKey = await getGeminiApiKey();
+    console.log("Successfully retrieved API key");
+    
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro", generationConfig: {
+      temperature: 0.7,
+      topP: 0.8,
+      topK: 40,
+    }});
+
+    const result = await model.generateContent({
+      contents: [{
+        role: "user",
+        parts: [{
+          text: `As an SEO expert, please analyze the following URL or content and provide a detailed report:
+
+          ${content}
+          
+          Please include:
+          1. Overall SEO grade (A+, A, B, etc.)
+          2. Detailed analysis of:
+             - Meta tags and descriptions
+             - Keyword optimization
+             - Content quality
+             - Technical SEO factors
+             - Loading speed considerations
+             - Mobile responsiveness
+          3. Specific recommendations for improvement
+          4. Priority levels for each recommendation`
+        }]
+      }]
+    });
+
+    const response = await result.response;
+    const text = response.text();
+    console.log("Received SEO optimization response:", text);
+    return text;
+  } catch (error) {
+    console.error("Error generating SEO optimization:", error);
+    throw error;
+  }
+};
+
 export const generateResearch = async (topic: string) => {
   try {
     console.log("Generating research for topic:", topic);
@@ -140,7 +186,6 @@ export const generateContent = async (prompt: string) => {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-    // Extract file URL if present in the prompt
     const fileUrlMatch = prompt.match(/https:\/\/.*?\.(?:pdf|txt|docx)/i);
     const fileUrl = fileUrlMatch ? fileUrlMatch[0] : null;
 
@@ -154,12 +199,10 @@ export const generateContent = async (prompt: string) => {
           throw new Error(`Failed to fetch document: ${response.statusText}`);
         }
 
-        // Convert the response to a File object
         const blob = await response.blob();
         const fileName = fileUrl.split('/').pop() || 'document';
         const file = new File([blob], fileName, { type: response.headers.get('content-type') || '' });
 
-        // Parse the document content
         console.log("Parsing document content...");
         documentContent = await parseDocument(file);
         console.log("Successfully parsed document content");
@@ -169,7 +212,6 @@ export const generateContent = async (prompt: string) => {
       }
     }
 
-    // Construct the final prompt with document content
     const finalPrompt = `
       ${prompt}
       
@@ -215,41 +257,6 @@ export const generateDataAnalysis = async (data: string) => {
     return text;
   } catch (error) {
     console.error("Error analyzing data:", error);
-    throw error;
-  }
-};
-
-export const generateSeoOptimization = async (content: string) => {
-  try {
-    console.log("Generating SEO optimization for content:", content);
-    const apiKey = await getGeminiApiKey();
-    console.log("Successfully retrieved API key");
-    
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const result = await model.generateContent(`
-      As an SEO expert, please analyze the following URL or content and provide a detailed report:
-
-      ${content}
-      
-      Please include:
-      1. Overall SEO grade (A+, A, B, etc.)
-      2. Detailed analysis of:
-         - Meta tags and descriptions
-         - Keyword optimization
-         - Content quality
-         - Technical SEO factors
-         - Loading speed considerations
-         - Mobile responsiveness
-      3. Specific recommendations for improvement
-      4. Priority levels for each recommendation
-    `);
-    const response = await result.response;
-    const text = response.text();
-    console.log("Received SEO optimization response:", text);
-    return text;
-  } catch (error) {
-    console.error("Error generating SEO optimization:", error);
     throw error;
   }
 };
