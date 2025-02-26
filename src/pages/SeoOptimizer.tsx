@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { generateSeoOptimization } from "@/services/gemini";
+import { generateSeoOptimization } from "@/services/ai";
 
 const SeoOptimizer = () => {
   const [content, setContent] = useState("");
