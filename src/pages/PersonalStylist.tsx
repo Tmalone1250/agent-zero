@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, Shirt, Send } from "lucide-react";
+import { ArrowLeft, Upload, Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -89,7 +89,7 @@ const PersonalStylist = () => {
 
       const { data: preferences } = await supabase
         .from('style_preferences')
-        .select('*')
+        .select('preferences')
         .eq('user_id', user.id)
         .single();
 
@@ -98,7 +98,7 @@ const PersonalStylist = () => {
           prompt: userInput,
           service: selectedService,
           userId: user.id,
-          preferences: preferences || {},
+          preferences: preferences?.preferences || {},
         },
       });
 

@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      company_research: {
+        Row: {
+          company_name: string
+          company_url: string | null
+          created_at: string | null
+          id: string
+          report_content: Json
+          report_type: string
+          user_id: string
+        }
+        Insert: {
+          company_name: string
+          company_url?: string | null
+          created_at?: string | null
+          id?: string
+          report_content: Json
+          report_type: string
+          user_id: string
+        }
+        Update: {
+          company_name?: string
+          company_url?: string | null
+          created_at?: string | null
+          id?: string
+          report_content?: Json
+          report_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       formatted_documents: {
         Row: {
           created_at: string
@@ -281,6 +311,54 @@ export type Database = {
           job_title?: string
           job_url?: string | null
           saved_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      style_preferences: {
+        Row: {
+          created_at: string | null
+          id: string
+          preferences: Json
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          preferences?: Json
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          preferences?: Json
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wardrobe_items: {
+        Row: {
+          category: string
+          created_at: string | null
+          id: string
+          image_url: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string | null
+          id?: string
+          image_url: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          id?: string
+          image_url?: string
           user_id?: string
         }
         Relationships: []
