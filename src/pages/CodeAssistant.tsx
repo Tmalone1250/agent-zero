@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Code } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { generateCodeAssistantResponse } from "@/services/gemini";
+import { generateCodeAssistantResponse } from "@/services/ai";
 
 const CodeAssistant = () => {
   const [prompt, setPrompt] = useState("");

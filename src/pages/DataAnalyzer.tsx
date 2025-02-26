@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, BarChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { generateDataAnalysis } from "@/services/gemini";
+import { generateDataAnalysis } from "@/services/ai";
 
 const DataAnalyzer = () => {
   const [data, setData] = useState("");

@@ -4,7 +4,7 @@ import { ArrowLeft, Target, Users, Mail, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { generateLeads } from "@/services/gemini";
+import { generateLeads } from "@/services/ai";
 import { Card } from "@/components/ui/card";
 
 const LeadGenerator = () => {

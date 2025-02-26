@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, PenTool } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { generateContent } from "@/services/gemini";
+import { generateContent } from "@/services/ai";
 
 const ContentWriter = () => {
   const [prompt, setPrompt] = useState("");

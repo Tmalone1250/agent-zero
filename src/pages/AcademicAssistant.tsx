@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { generateContent } from "@/services/gemini";
+import { generateContent } from "@/services/ai";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 

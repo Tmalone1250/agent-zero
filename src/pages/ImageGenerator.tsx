@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { generateImage } from "@/services/gemini";
+import { generateImage } from "@/services/ai";
 import { useToast } from "@/components/ui/use-toast";
 import { ArrowLeft } from "lucide-react";
 

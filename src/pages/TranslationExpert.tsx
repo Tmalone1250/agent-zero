@@ -4,7 +4,7 @@ import { ArrowLeft, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { generateTranslation } from "@/services/gemini";
+import { generateTranslation } from "@/services/ai";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const languages = [

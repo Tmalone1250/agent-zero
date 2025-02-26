@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { generateCustomerServiceResponse } from "@/services/gemini";
+import { generateCustomerServiceResponse } from "@/services/ai";
 
 const CustomerServiceBot = () => {
   const [message, setMessage] = useState("");

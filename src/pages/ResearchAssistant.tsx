@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { generateResearch } from "@/services/gemini";
+import { generateResearch } from "@/services/ai";
 
 const ResearchAssistant = () => {
   const [topic, setTopic] = useState("");
