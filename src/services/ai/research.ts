@@ -1,18 +1,13 @@
 
-import { createGeminiClient, DEFAULT_MODEL_CONFIG } from './config';
+import { callOpenRouter } from './config';
 
 export const generateResearch = async (topic: string) => {
   try {
     console.log("Generating research for topic:", topic);
-    const genAI = await createGeminiClient();
-    
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.0-pro",
-      generationConfig: DEFAULT_MODEL_CONFIG
-    });
 
-    const result = await model.generateContent(`
-      As a research assistant, please analyze the following topic and provide a comprehensive research analysis:
+    const messages = [
+      { role: "system", content: "You are a research assistant that provides comprehensive analysis on various topics." },
+      { role: "user", content: `As a research assistant, please analyze the following topic and provide a comprehensive research analysis:
       
       ${topic}
       
@@ -24,12 +19,12 @@ export const generateResearch = async (topic: string) => {
       5. Conclusions and Recommendations
       6. References and Further Reading
       
-      Format the response in clear sections with detailed insights.
-    `);
-    const response = await result.response;
-    const text = response.text();
-    console.log("Received research analysis response:", text);
-    return text;
+      Format the response in clear sections with detailed insights.` }
+    ];
+
+    const result = await callOpenRouter(messages);
+    console.log("Received research analysis response");
+    return result;
   } catch (error) {
     console.error("Error generating research:", error);
     throw error;

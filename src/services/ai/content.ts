@@ -1,17 +1,11 @@
 
-import { createGeminiClient, DEFAULT_MODEL_CONFIG } from './config';
+import { callOpenRouter } from './config';
 import { parseDocument } from "@/utils/documentParser";
 
 export const generateContent = async (prompt: string) => {
   try {
     console.log("Generating content for prompt:", prompt);
-    const genAI = await createGeminiClient();
     
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.0-pro",
-      generationConfig: DEFAULT_MODEL_CONFIG
-    });
-
     const fileUrlMatch = prompt.match(/https:\/\/.*?\.(?:pdf|txt|docx)/i);
     const fileUrl = fileUrlMatch ? fileUrlMatch[0] : null;
 
@@ -38,21 +32,15 @@ export const generateContent = async (prompt: string) => {
       }
     }
 
-    const finalPrompt = `
-      ${prompt}
-      
-      ${documentContent ? `Document Content:
-      ${documentContent}
-      
-      Please analyze this document content and provide a detailed response based on the user's request.` : ''}
-    `;
+    const messages = [
+      { role: "system", content: "You are a helpful AI assistant that provides high-quality content generation." },
+      { role: "user", content: `${prompt}${documentContent ? `\n\nDocument Content:\n${documentContent}` : ''}` }
+    ];
 
-    console.log("Sending final prompt to Gemini API");
-    const result = await model.generateContent(finalPrompt);
-    const response = await result.response;
-    const text = response.text();
-    console.log("Received content generation response:", text);
-    return text;
+    console.log("Sending request to OpenRouter API");
+    const result = await callOpenRouter(messages);
+    console.log("Received content generation response");
+    return result;
   } catch (error) {
     console.error("Error generating content:", error);
     throw error;

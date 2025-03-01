@@ -1,27 +1,18 @@
 
-import { createGeminiClient, DEFAULT_MODEL_CONFIG } from './config';
+import { callOpenRouter } from './config';
 
 export const generateTranslation = async (text: string, targetLanguage: string) => {
   try {
     console.log("Generating translation for text:", text, "to language:", targetLanguage);
-    const genAI = await createGeminiClient();
     
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.0-pro",
-      generationConfig: DEFAULT_MODEL_CONFIG
-    });
+    const messages = [
+      { role: "system", content: `You are a professional translator. Translate the given text to ${targetLanguage} accurately, maintaining the original meaning and tone. Provide only the translated text without any additional comments or explanations.` },
+      { role: "user", content: text }
+    ];
 
-    const result = await model.generateContent(`
-      Please translate the following text to ${targetLanguage}:
-      
-      ${text}
-      
-      Please provide only the translated text without any additional comments or explanations.
-    `);
-    const response = await result.response;
-    const translatedText = response.text();
-    console.log("Received translation:", translatedText);
-    return translatedText;
+    const result = await callOpenRouter(messages);
+    console.log("Received translation");
+    return result;
   } catch (error) {
     console.error("Error generating translation:", error);
     throw error;

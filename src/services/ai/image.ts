@@ -1,29 +1,20 @@
 
-import { createGeminiClient, DEFAULT_MODEL_CONFIG } from './config';
+import { callOpenRouter } from './config';
 
 export const generateImage = async (prompt: string) => {
   try {
-    console.log("Generating image for prompt:", prompt);
-    const genAI = await createGeminiClient();
+    console.log("Generating image description for prompt:", prompt);
     
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.0-pro",
-      generationConfig: DEFAULT_MODEL_CONFIG
-    });
+    const messages = [
+      { role: "system", content: "You are an AI that can describe images in great detail based on text prompts." },
+      { role: "user", content: `Please generate a detailed description of an image based on the following prompt: ${prompt}. Describe what would be in the image, including visual details, composition, style, colors, and mood.` }
+    ];
 
-    const result = await model.generateContent(`
-      Please generate an image based on the following description:
-      
-      ${prompt}
-      
-      Please provide a detailed description of the generated image and any relevant metadata.
-    `);
-    const response = await result.response;
-    const text = response.text();
-    console.log("Received image generation response:", text);
-    return text;
+    const result = await callOpenRouter(messages);
+    console.log("Received image description response");
+    return result;
   } catch (error) {
-    console.error("Error generating image:", error);
+    console.error("Error generating image description:", error);
     throw error;
   }
 };

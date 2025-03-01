@@ -1,18 +1,13 @@
 
-import { createGeminiClient, DEFAULT_MODEL_CONFIG } from './config';
+import { callOpenRouter } from './config';
 
 export const generateMarketAnalysis = async (prompt: string) => {
   try {
     console.log("Generating market analysis for:", prompt);
-    const genAI = await createGeminiClient();
     
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.0-pro",
-      generationConfig: DEFAULT_MODEL_CONFIG
-    });
-
-    const result = await model.generateContent(`
-      As a market analyst, please analyze the following request:
+    const messages = [
+      { role: "system", content: "You are a market analyst who provides comprehensive insights on market trends, competitors, and strategic opportunities." },
+      { role: "user", content: `As a market analyst, please analyze the following request:
       
       ${prompt}
       
@@ -24,12 +19,12 @@ export const generateMarketAnalysis = async (prompt: string) => {
       5. Risk Assessment
       6. Strategic Recommendations
       
-      Format the response in clear sections with detailed insights.
-    `);
-    const response = await result.response;
-    const text = response.text();
-    console.log("Received market analysis response:", text);
-    return text;
+      Format the response in clear sections with detailed insights.` }
+    ];
+
+    const result = await callOpenRouter(messages);
+    console.log("Received market analysis response");
+    return result;
   } catch (error) {
     console.error("Error generating market analysis:", error);
     throw error;

@@ -1,5 +1,4 @@
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { supabase } from "@/integrations/supabase/client";
 
 export const getGeminiApiKey = async () => {
@@ -28,8 +27,15 @@ export const getGeminiApiKey = async () => {
   }
 };
 
+export const getOpenRouterApiKey = async () => {
+  // For demonstration, we're using the provided key directly
+  // In a production app, this should be stored securely
+  return "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";
+};
+
 export const createGeminiClient = async () => {
   const apiKey = await getGeminiApiKey();
+  const { GoogleGenerativeAI } = await import("@google/generative-ai");
   const genAI = new GoogleGenerativeAI(apiKey);
   return genAI;
 };
@@ -40,3 +46,38 @@ export const DEFAULT_MODEL_CONFIG = {
   topK: 40,
 };
 
+export const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
+export const OPENROUTER_MODEL = "deepseek/deepseek-chat";
+
+export const callOpenRouter = async (messages: any[], temperature: number = 0.7) => {
+  try {
+    const apiKey = await getOpenRouterApiKey();
+    
+    const response = await fetch(OPENROUTER_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+        "HTTP-Referer": window.location.origin,
+        "X-Title": "AI Assistant App"
+      },
+      body: JSON.stringify({
+        model: OPENROUTER_MODEL,
+        messages,
+        temperature,
+        max_tokens: 2048,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`OpenRouter API error (${response.status}): ${errorText}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+  } catch (error) {
+    console.error("Error calling OpenRouter:", error);
+    throw error;
+  }
+};

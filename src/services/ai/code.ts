@@ -1,18 +1,13 @@
 
-import { createGeminiClient, DEFAULT_MODEL_CONFIG } from './config';
+import { callOpenRouter } from './config';
 
 export const generateCodeAssistantResponse = async (prompt: string) => {
   try {
     console.log("Generating code assistant response for:", prompt);
-    const genAI = await createGeminiClient();
     
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.0-pro",
-      generationConfig: DEFAULT_MODEL_CONFIG
-    });
-
-    const result = await model.generateContent(`
-      As a coding assistant, please help with the following request:
+    const messages = [
+      { role: "system", content: "You are a coding assistant who helps with programming questions and provides clean, efficient code solutions with explanations." },
+      { role: "user", content: `As a coding assistant, please help with the following request:
       
       ${prompt}
       
@@ -22,12 +17,12 @@ export const generateCodeAssistantResponse = async (prompt: string) => {
       3. Any relevant best practices or considerations
       4. Example usage if applicable
       
-      Format the response with clear code blocks and explanations.
-    `);
-    const response = await result.response;
-    const text = response.text();
-    console.log("Received code assistant response:", text);
-    return text;
+      Format the response with clear code blocks and explanations.` }
+    ];
+
+    const result = await callOpenRouter(messages);
+    console.log("Received code assistant response");
+    return result;
   } catch (error) {
     console.error("Error generating code assistant response:", error);
     throw error;
