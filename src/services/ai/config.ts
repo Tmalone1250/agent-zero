@@ -28,8 +28,8 @@ export const getGeminiApiKey = async () => {
 };
 
 export const getOpenRouterApiKey = async () => {
-  // For demonstration, we're using the provided key directly
-  // In a production app, this should be stored securely
+  // The API key is hardcoded for demonstration purposes
+  // In production, this should be stored in Supabase secrets
   return "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";
 };
 
@@ -53,13 +53,15 @@ export const callOpenRouter = async (messages: any[], temperature: number = 0.7)
   try {
     const apiKey = await getOpenRouterApiKey();
     
+    console.log("Calling OpenRouter with API key:", apiKey ? "Key exists" : "No key found");
+    
     const response = await fetch(OPENROUTER_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${apiKey}`,
-        "HTTP-Referer": window.location.origin,
-        "X-Title": "AI Assistant App"
+        "HTTP-Referer": window.location.origin, // Required by OpenRouter
+        "X-Title": "AI Assistant App" // Optional, but helpful for OpenRouter to track your app
       },
       body: JSON.stringify({
         model: OPENROUTER_MODEL,
@@ -71,6 +73,7 @@ export const callOpenRouter = async (messages: any[], temperature: number = 0.7)
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error("OpenRouter API error response:", errorText);
       throw new Error(`OpenRouter API error (${response.status}): ${errorText}`);
     }
 
