@@ -27,32 +27,6 @@ export const getGeminiApiKey = async () => {
   }
 };
 
-export const getOpenRouterApiKey = async () => {
-  console.log("Fetching OpenRouter API key from Supabase...");
-  try {
-    const { data, error } = await supabase.functions.invoke('get-secret', {
-      body: { secretName: 'OPENROUTER_API_KEY' }
-    });
-    
-    console.log("Supabase function response for OpenRouter:", { data, error });
-    
-    if (error) {
-      console.error("Error from Supabase function:", error);
-      throw new Error(`Failed to get OpenRouter API key: ${error.message}`);
-    }
-    
-    if (!data?.OPENROUTER_API_KEY) {
-      console.error("No OpenRouter API key returned from function");
-      throw new Error("OPENROUTER_API_KEY not found in response");
-    }
-    
-    return data.OPENROUTER_API_KEY;
-  } catch (error) {
-    console.error("Error in getOpenRouterApiKey:", error);
-    throw error;
-  }
-};
-
 export const createGeminiClient = async () => {
   const apiKey = await getGeminiApiKey();
   const { GoogleGenerativeAI } = await import("@google/generative-ai");
@@ -66,41 +40,78 @@ export const DEFAULT_MODEL_CONFIG = {
   topK: 40,
 };
 
-export const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-export const OPENROUTER_MODEL = "deepseek/deepseek-chat";
-
-export const callOpenRouter = async (messages: any[], temperature: number = 0.7) => {
+export const callGeminiAPI = async (prompt: string, temperature: number = 0.7) => {
   try {
-    const apiKey = await getOpenRouterApiKey();
+    console.log("Calling Gemini API with prompt:", prompt.substring(0, 100) + "...");
     
-    console.log("Calling OpenRouter with API key:", apiKey ? "Key exists" : "No key found");
-    
-    const response = await fetch(OPENROUTER_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
-        "HTTP-Referer": window.location.origin, // Required by OpenRouter
-        "X-Title": "AI Assistant App" // Optional, but helpful for OpenRouter to track your app
-      },
-      body: JSON.stringify({
-        model: OPENROUTER_MODEL,
-        messages,
+    const genAI = await createGeminiClient();
+    const model = genAI.getGenerativeModel({
+      model: "gemini-pro",
+      generationConfig: {
         temperature,
-        max_tokens: 2048,
-      }),
+        topP: DEFAULT_MODEL_CONFIG.topP,
+        topK: DEFAULT_MODEL_CONFIG.topK,
+      },
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("OpenRouter API error response:", errorText);
-      throw new Error(`OpenRouter API error (${response.status}): ${errorText}`);
-    }
-
-    const data = await response.json();
-    return data.choices[0].message.content;
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
+    
+    console.log("Received Gemini API response");
+    return text;
   } catch (error) {
-    console.error("Error calling OpenRouter:", error);
+    console.error("Error calling Gemini API:", error);
+    throw error;
+  }
+};
+
+// Helper function to convert chat messages to Gemini format
+export const callGeminiChat = async (messages: Array<{role: string, content: string}>, temperature: number = 0.7) => {
+  try {
+    console.log("Calling Gemini Chat API with messages");
+    
+    const genAI = await createGeminiClient();
+    const model = genAI.getGenerativeModel({
+      model: "gemini-pro",
+      generationConfig: {
+        temperature,
+        topP: DEFAULT_MODEL_CONFIG.topP,
+        topK: DEFAULT_MODEL_CONFIG.topK,
+      },
+    });
+
+    // Convert messages to Gemini chat format
+    const geminiMessages = messages.map(msg => {
+      // Map 'user' and 'assistant' roles to Gemini's expected format
+      const role = msg.role === 'assistant' ? 'model' : 'user';
+      return {
+        role,
+        parts: [{ text: msg.content }]
+      };
+    });
+
+    // Start a chat session
+    const chat = model.startChat({
+      history: geminiMessages.slice(0, -1),
+      generationConfig: {
+        temperature,
+        topP: DEFAULT_MODEL_CONFIG.topP,
+        topK: DEFAULT_MODEL_CONFIG.topK,
+      },
+    });
+
+    // Get the last message to send
+    const lastMessage = geminiMessages[geminiMessages.length - 1];
+    
+    // Send the message and get the response
+    const result = await chat.sendMessage(lastMessage.parts[0].text);
+    const text = result.response.text();
+    
+    console.log("Received Gemini Chat API response");
+    return text;
+  } catch (error) {
+    console.error("Error calling Gemini Chat API:", error);
     throw error;
   }
 };

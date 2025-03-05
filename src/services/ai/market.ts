@@ -1,28 +1,27 @@
 
-import { callOpenRouter } from './config';
+import { callGeminiAPI } from './config';
 
 export const generateMarketAnalysis = async (prompt: string) => {
   try {
-    console.log("Generating market analysis for:", prompt);
+    console.log("Generating market analysis for prompt:", prompt);
     
-    const messages = [
-      { role: "system", content: "You are a market analyst who provides comprehensive insights on market trends, competitors, and strategic opportunities." },
-      { role: "user", content: `As a market analyst, please analyze the following request:
+    const fullPrompt = `
+      I need a comprehensive market analysis based on the following request:
       
       ${prompt}
       
-      Please provide:
-      1. Market Overview
-      2. Key Trends
-      3. Competitor Analysis
-      4. Growth Opportunities
-      5. Risk Assessment
-      6. Strategic Recommendations
+      Please provide a structured analysis including:
       
-      Format the response in clear sections with detailed insights.` }
-    ];
-
-    const result = await callOpenRouter(messages);
+      1. Market overview and current trends
+      2. Key players and their market shares
+      3. Growth opportunities and challenges
+      4. Competitive landscape
+      5. Future outlook and predictions
+      
+      Format your response in a clear, structured way with headings and bullet points where appropriate.
+    `;
+    
+    const result = await callGeminiAPI(fullPrompt);
     console.log("Received market analysis response");
     return result;
   } catch (error) {

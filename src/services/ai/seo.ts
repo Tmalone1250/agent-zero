@@ -1,30 +1,28 @@
 
-import { callOpenRouter } from './config';
+import { callGeminiAPI } from './config';
 
 export const generateSeoOptimization = async (content: string) => {
   try {
-    console.log("Generating SEO optimization for content:", content);
-
-    const messages = [
-      { role: "system", content: "You are an SEO expert assistant. Analyze the provided content and provide detailed SEO recommendations." },
-      { role: "user", content: `As an SEO expert, please analyze the following URL or content and provide a detailed report:
-
+    console.log("Generating SEO optimization for content:", content.substring(0, 100) + "...");
+    
+    const prompt = `
+      I need to optimize the following content for search engines:
+      
       ${content}
       
-      Please include:
-      1. Overall SEO grade (A+, A, B, etc.)
-      2. Detailed analysis of:
-         - Meta tags and descriptions
-         - Keyword optimization
-         - Content quality
-         - Technical SEO factors
-         - Loading speed considerations
-         - Mobile responsiveness
-      3. Specific recommendations for improvement
-      4. Priority levels for each recommendation` }
-    ];
-
-    const result = await callOpenRouter(messages);
+      Please provide a complete analysis and recommendations for SEO optimization, including:
+      
+      1. Keyword analysis and suggestions
+      2. Meta title and description recommendations
+      3. Content structure improvements
+      4. Readability improvements
+      5. Internal and external linking suggestions
+      6. Any other SEO recommendations that would help this content rank better
+      
+      Format your response in a clear, structured way with headings and bullet points where appropriate.
+    `;
+    
+    const result = await callGeminiAPI(prompt);
     console.log("Received SEO optimization response");
     return result;
   } catch (error) {

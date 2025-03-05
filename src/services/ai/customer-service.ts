@@ -1,5 +1,5 @@
 
-import { callOpenRouter } from './config';
+import { callGeminiChat } from './config';
 
 export const generateCustomerServiceResponse = async (message: string) => {
   try {
@@ -10,7 +10,7 @@ export const generateCustomerServiceResponse = async (message: string) => {
       { role: "user", content: message }
     ];
     
-    const result = await callOpenRouter(messages);
+    const result = await callGeminiChat(messages);
     console.log("Received customer service response");
     return result;
   } catch (error) {

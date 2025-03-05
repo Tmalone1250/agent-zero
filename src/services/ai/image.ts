@@ -1,5 +1,5 @@
 
-import { callOpenRouter } from './config';
+import { callGeminiChat } from './config';
 
 export const generateImage = async (prompt: string) => {
   try {
@@ -10,7 +10,7 @@ export const generateImage = async (prompt: string) => {
       { role: "user", content: `Please generate a detailed description of an image based on the following prompt: ${prompt}. Describe what would be in the image, including visual details, composition, style, colors, and mood.` }
     ];
 
-    const result = await callOpenRouter(messages);
+    const result = await callGeminiChat(messages);
     console.log("Received image description response");
     return result;
   } catch (error) {

@@ -1,5 +1,5 @@
 
-import { callOpenRouter } from './config';
+import { callGeminiChat } from './config';
 
 export const generateTranslation = async (text: string, targetLanguage: string) => {
   try {
@@ -10,7 +10,7 @@ export const generateTranslation = async (text: string, targetLanguage: string) 
       { role: "user", content: text }
     ];
 
-    const result = await callOpenRouter(messages);
+    const result = await callGeminiChat(messages);
     console.log("Received translation");
     return result;
   } catch (error) {
