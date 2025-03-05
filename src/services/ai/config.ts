@@ -28,9 +28,29 @@ export const getGeminiApiKey = async () => {
 };
 
 export const getOpenRouterApiKey = async () => {
-  // The API key is hardcoded for demonstration purposes
-  // In production, this should be stored in Supabase secrets
-  return "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";
+  console.log("Fetching OpenRouter API key from Supabase...");
+  try {
+    const { data, error } = await supabase.functions.invoke('get-secret', {
+      body: { secretName: 'OPENROUTER_API_KEY' }
+    });
+    
+    console.log("Supabase function response for OpenRouter:", { data, error });
+    
+    if (error) {
+      console.error("Error from Supabase function:", error);
+      throw new Error(`Failed to get OpenRouter API key: ${error.message}`);
+    }
+    
+    if (!data?.OPENROUTER_API_KEY) {
+      console.error("No OpenRouter API key returned from function");
+      throw new Error("OPENROUTER_API_KEY not found in response");
+    }
+    
+    return data.OPENROUTER_API_KEY;
+  } catch (error) {
+    console.error("Error in getOpenRouterApiKey:", error);
+    throw error;
+  }
 };
 
 export const createGeminiClient = async () => {

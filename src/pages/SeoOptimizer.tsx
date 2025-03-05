@@ -1,15 +1,18 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, Search, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { generateSeoOptimization } from "@/services/ai";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const SeoOptimizer = () => {
   const [content, setContent] = useState("");
   const [optimization, setOptimization] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleOptimize = async () => {
@@ -23,6 +26,8 @@ const SeoOptimizer = () => {
     }
 
     setIsLoading(true);
+    setError(null);
+    
     try {
       const result = await generateSeoOptimization(content);
       setOptimization(result);
@@ -32,9 +37,14 @@ const SeoOptimizer = () => {
       });
     } catch (error) {
       console.error("Error generating SEO optimization:", error);
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : "Failed to generate SEO optimization. Please try again.";
+      
+      setError(errorMessage);
       toast({
         title: "Error",
-        description: "Failed to generate SEO optimization. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -63,6 +73,16 @@ const SeoOptimizer = () => {
         </div>
 
         <div className="space-y-6">
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>
+                {error}
+              </AlertDescription>
+            </Alert>
+          )}
+          
           <div>
             <Textarea
               placeholder="Enter your content or URL to optimize..."

@@ -33,4 +33,3 @@ file_size_limit = "50MiB"
 [[functions.function]]
 name = "get-secret"
 verify_jwt = false
-
