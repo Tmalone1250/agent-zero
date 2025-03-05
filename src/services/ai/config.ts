@@ -45,8 +45,9 @@ export const callGeminiAPI = async (prompt: string, temperature: number = 0.7) =
     console.log("Calling Gemini API with prompt:", prompt.substring(0, 100) + "...");
     
     const genAI = await createGeminiClient();
+    // Update to use gemini-1.5-pro model instead of gemini-pro
     const model = genAI.getGenerativeModel({
-      model: "gemini-pro",
+      model: "gemini-1.5-pro",
       generationConfig: {
         temperature,
         topP: DEFAULT_MODEL_CONFIG.topP,
@@ -72,8 +73,9 @@ export const callGeminiChat = async (messages: Array<{role: string, content: str
     console.log("Calling Gemini Chat API with messages");
     
     const genAI = await createGeminiClient();
+    // Update to use gemini-1.5-pro model instead of gemini-pro
     const model = genAI.getGenerativeModel({
-      model: "gemini-pro",
+      model: "gemini-1.5-pro",
       generationConfig: {
         temperature,
         topP: DEFAULT_MODEL_CONFIG.topP,
