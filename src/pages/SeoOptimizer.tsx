@@ -30,6 +30,7 @@ const SeoOptimizer = () => {
     
     try {
       const result = await generateSeoOptimization(content);
+      // Ensure result is treated as plain text
       setOptimization(result);
       toast({
         title: "Success",
@@ -111,7 +112,7 @@ const SeoOptimizer = () => {
             <div className="mt-8">
               <div className="p-6 rounded-lg bg-black/50 border border-white/10">
                 <h2 className="text-xl font-semibold text-white mb-4">SEO Recommendations</h2>
-                <div className="text-neutral-300 whitespace-pre-wrap">{optimization}</div>
+                <pre className="text-neutral-300 whitespace-pre-wrap font-sans text-base">{optimization}</pre>
               </div>
             </div>
           )}

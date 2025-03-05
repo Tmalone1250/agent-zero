@@ -19,7 +19,7 @@ export const generateSeoOptimization = async (content: string) => {
       5. Internal and external linking suggestions
       6. Any other SEO recommendations that would help this content rank better
       
-      Format your response in a clear, structured way with headings and bullet points where appropriate.
+      Format your response as plain text with clear headings and bullet points where appropriate. Do not use markdown or any other formatting.
     `;
     
     const result = await callGeminiAPI(prompt);
