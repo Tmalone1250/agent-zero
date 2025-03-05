@@ -1,13 +1,36 @@
 
-# project configuration
+# A string specifying the project ID
 project_id = "fwkgnukqwpamjaurigmk"
+
 [api]
-enabled = true
-[api.schema]
-enabled = true
+# Port number for the API
+port = 54321
+# Schemas to expose in your API
+schemas = ["public", "storage", "graphql_public"]
+
 [db]
-enabled = true
-[db.migrations]
-enabled = true
+# Port number for the database
+port = 54322
+
+[studio]
+# Port number for Supabase Studio
+port = 54323
+
+[inbucket]
+# Port number for the email testing server
+port = 54324
+
+[auth]
+# Enabled/disable JWT authentication
+enable_signup = true
+
+[storage]
+# Enabled/disable storage API and services
+file_size_limit = "50MiB"
+
 [functions]
-enabled = true
+# Set NODE_VERSION to determine runtime, use ["--env", "VAR=value"] for env vars
+[[functions.function]]
+name = "get-secret"
+verify_jwt = false
+
