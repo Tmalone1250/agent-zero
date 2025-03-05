@@ -28,8 +28,12 @@ enable_signup = true
 # Enabled/disable storage API and services
 file_size_limit = "50MiB"
 
+# Function configuration
 [functions]
-# Set NODE_VERSION to determine runtime, use ["--env", "VAR=value"] for env vars
-[[functions.function]]
-name = "get-secret"
+# Function named get-secret
+[functions.get_secret]
+verify_jwt = false
+
+# Function named company-research
+[functions.company_research]
 verify_jwt = false
