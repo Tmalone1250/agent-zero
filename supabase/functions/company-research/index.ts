@@ -14,7 +14,9 @@ serve(async (req) => {
   }
 
   try {
+    console.log("Received company research request");
     const { companyName, companyUrl, reportType, userId } = await req.json();
+    console.log(`Generating research for ${companyName}, report type: ${reportType}`);
 
     let systemPrompt = "You are an expert business analyst and company researcher. ";
 
@@ -42,9 +44,20 @@ serve(async (req) => {
     Focus on providing detailed, data-driven insights for the specified report type.
     Format the response in clear sections with headings using Markdown.`;
 
+    console.log("Initializing Gemini API");
     const genAI = new GoogleGenerativeAI(Deno.env.get("GEMINI_API_KEY")!);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    
+    // Update to use gemini-1.5-pro model instead of gemini-pro
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-pro",
+      generationConfig: {
+        temperature: 0.7,
+        topP: 0.8,
+        topK: 40,
+      }
+    });
 
+    console.log("Generating content with Gemini API");
     const result = await model.generateContent([
       { text: systemPrompt },
       { text: prompt }
@@ -52,6 +65,7 @@ serve(async (req) => {
 
     const response = result.response;
     const text = response.text();
+    console.log("Successfully generated company research");
 
     return new Response(
       JSON.stringify({ response: text }),
