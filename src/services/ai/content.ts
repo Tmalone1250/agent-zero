@@ -1,5 +1,5 @@
 
-import { callOpenRouter } from './config';
+import { callGeminiChat } from './config';
 import { parseDocument } from "@/utils/documentParser";
 
 export const generateContent = async (prompt: string) => {
@@ -37,8 +37,8 @@ export const generateContent = async (prompt: string) => {
       { role: "user", content: `${prompt}${documentContent ? `\n\nDocument Content:\n${documentContent}` : ''}` }
     ];
 
-    console.log("Sending request to OpenRouter API");
-    const result = await callOpenRouter(messages);
+    console.log("Sending request to Gemini API");
+    const result = await callGeminiChat(messages);
     console.log("Received content generation response");
     return result;
   } catch (error) {

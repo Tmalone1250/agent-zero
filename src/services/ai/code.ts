@@ -1,5 +1,5 @@
 
-import { callOpenRouter } from './config';
+import { callGeminiChat } from './config';
 
 export const generateCodeAssistantResponse = async (prompt: string) => {
   try {
@@ -20,7 +20,7 @@ export const generateCodeAssistantResponse = async (prompt: string) => {
       Format the response with clear code blocks and explanations.` }
     ];
 
-    const result = await callOpenRouter(messages);
+    const result = await callGeminiChat(messages);
     console.log("Received code assistant response");
     return result;
   } catch (error) {

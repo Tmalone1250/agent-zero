@@ -1,5 +1,5 @@
 
-import { callOpenRouter } from './config';
+import { callGeminiChat } from './config';
 
 export const generateLeads = async (prompt: string) => {
   try {
@@ -21,7 +21,7 @@ export const generateLeads = async (prompt: string) => {
       Format the response in clear sections with actionable insights.` }
     ];
 
-    const result = await callOpenRouter(messages);
+    const result = await callGeminiChat(messages);
     console.log("Received lead generation response");
     return result;
   } catch (error) {

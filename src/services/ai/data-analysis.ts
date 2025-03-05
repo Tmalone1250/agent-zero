@@ -1,5 +1,5 @@
 
-import { callOpenRouter } from './config';
+import { callGeminiChat } from './config';
 
 export const generateDataAnalysis = async (data: string) => {
   try {
@@ -20,7 +20,7 @@ export const generateDataAnalysis = async (data: string) => {
       Format the response in clear sections with detailed insights.` }
     ];
 
-    const result = await callOpenRouter(messages);
+    const result = await callGeminiChat(messages);
     console.log("Received data analysis response");
     return result;
   } catch (error) {

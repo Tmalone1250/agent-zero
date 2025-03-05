@@ -1,5 +1,5 @@
 
-import { callOpenRouter } from './config';
+import { callGeminiChat } from './config';
 
 export const generateResearch = async (topic: string) => {
   try {
@@ -22,7 +22,7 @@ export const generateResearch = async (topic: string) => {
       Format the response in clear sections with detailed insights.` }
     ];
 
-    const result = await callOpenRouter(messages);
+    const result = await callGeminiChat(messages);
     console.log("Received research analysis response");
     return result;
   } catch (error) {
