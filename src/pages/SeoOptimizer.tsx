@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Search, AlertCircle } from "lucide-react";
+import { ArrowLeft, Search, AlertCircle, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
@@ -51,6 +51,30 @@ const SeoOptimizer = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleDownload = () => {
+    if (!optimization) return;
+    
+    // Create a blob with the optimization text
+    const blob = new Blob([optimization], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    
+    // Create a temporary anchor element to trigger the download
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "seo-recommendations.txt";
+    document.body.appendChild(a);
+    a.click();
+    
+    // Clean up
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Download Started",
+      description: "Your SEO recommendations are being downloaded",
+    });
   };
 
   return (
@@ -114,6 +138,14 @@ const SeoOptimizer = () => {
                 <h2 className="text-xl font-semibold text-white mb-4">SEO Recommendations</h2>
                 <pre className="text-neutral-300 whitespace-pre-wrap font-sans text-base">{optimization}</pre>
               </div>
+              
+              <Button 
+                onClick={handleDownload}
+                className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download Recommendations
+              </Button>
             </div>
           )}
         </div>
